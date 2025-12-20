@@ -1,0 +1,33 @@
+# Gitleaks configuration for dotfiles
+# Extends default rules with allowlist for false positives
+
+[extend]
+# Use default gitleaks rules
+useDefault = true
+
+[allowlist]
+description = "Allowlist for dotfiles false positives"
+
+# Paths to completely ignore (these files never contain secrets)
+paths = [
+    '''lazy-lock\.json''',
+    '''package\.toml''',
+    '''Brewfile\.lock\.json''',
+]
+
+# Regex patterns to ignore (common false positives)
+regexes = [
+    # Example placeholder values in configs
+    '''YOUR_API_KEY_HERE''',
+    '''your-api-key''',
+    '''<API_KEY>''',
+    '''REPLACE_ME''',
+    # Hex color codes that look like tokens
+    '''#[0-9a-fA-F]{6}''',
+    # Common example domains/URLs
+    '''example\.com''',
+    '''localhost''',
+]
+
+# Specific commits to ignore (add SHA here if needed)
+commits = []

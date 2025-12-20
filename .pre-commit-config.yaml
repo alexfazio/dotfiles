@@ -1,0 +1,15 @@
+# Pre-commit hooks for dotfiles secret protection
+# Run manually: pre-commit run --all-files
+# Auto-runs on: git commit
+
+repos:
+  # Gitleaks - detect secrets in git repos
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2
+    hooks:
+      - id: gitleaks
+        name: gitleaks
+        description: Detect hardcoded secrets
+        entry: gitleaks protect --verbose --redact --staged
+        language: system
+        pass_filenames: false

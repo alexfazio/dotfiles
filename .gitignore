@@ -10,3 +10,63 @@ keymap.toml-*
 
 # Neovim runtime files
 .neoconf.json
+
+# =============================================================================
+# SENSITIVE FILES - NEVER COMMIT
+# =============================================================================
+
+# Environment files with secrets
+*.env
+.env.*
+!*.env.example
+!*.env.template
+secrets.env
+.secrets
+.secrets.*
+
+# API keys and tokens
+*_token
+*_token.*
+*.key
+*.pem
+!*.key.pub
+api_key*
+auth_token*
+
+# Credentials
+credentials.json
+credentials.yaml
+*.credentials
+.netrc
+.npmrc
+.pypirc
+
+# SSH (except public keys)
+id_rsa
+id_ed25519
+id_ecdsa
+*.ppk
+
+# AWS/Cloud
+.aws/credentials
+.aws/config
+*.tfvars
+*.tfstate*
+
+# GPG
+*.gpg
+secring.*
+pubring.*
+
+# Password stores
+.password-store/
+*.kdbx
+
+# Local overrides (for machine-specific secrets)
+*.local
+*.local.*
+
+# Sync state files
+.last-sync
+.sync-status
+.sync.log
