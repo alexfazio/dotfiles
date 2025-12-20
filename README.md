@@ -11,6 +11,7 @@ Personal dotfiles for macOS, managed with traditional symlinks and automated syn
 | **WezTerm** | `wezterm/` | Cross-platform terminal emulator |
 | **Yazi** | `yazi/` | Terminal file manager |
 | **Neovim** | `nvim/` | LazyVim-based Neovim configuration |
+| **Zsh** | `zsh/` | Shell configuration with aliases and functions |
 | **Homebrew** | `Brewfile` | All installed packages and casks |
 
 ## Quick Start
@@ -45,6 +46,7 @@ Files live in `~/.dotfiles/` and are symlinked to their expected locations:
 ~/.dotfiles/wezterm/wezterm.lua       →  ~/.config/wezterm/wezterm.lua
 ~/.dotfiles/yazi/*.toml               →  ~/.config/yazi/*.toml
 ~/.dotfiles/nvim/*                    →  ~/.config/nvim/*
+~/.dotfiles/zsh/.zshrc                →  ~/.zshrc
 ```
 
 ### Why Symlinks?
@@ -126,18 +128,10 @@ Dotfiles sync automatically every hour without manual commits.
 
 ### Shell Integration
 
-Add to `~/.zshrc`:
-
-```bash
-# Dotfiles status alias
-alias dfs="~/.dotfiles/scripts/sync-status.sh"
-
-# Load secrets (gitignored)
-[ -f ~/.secrets.env ] && source ~/.secrets.env
-
-# Warn if dotfiles sync is stale (>24 hours)
-~/.dotfiles/scripts/sync-status.sh --check 2>/dev/null
-```
+The `.zshrc` is managed by this repo and includes:
+- `dfs` alias for checking sync status
+- Auto-loading of `~/.secrets.env` (gitignored)
+- Startup warning if sync is stale (>24 hours)
 
 ### Manual Sync
 
@@ -221,6 +215,8 @@ rm -rf "$BACKUP_DIR" ~/.dotfiles-backup-location
 │   ├── lazyvim.json            # LazyVim config
 │   ├── stylua.toml             # Lua formatter config
 │   └── lua/                    # Lua config modules
+├── zsh/
+│   └── .zshrc                  # Shell config (aliases, functions, PATH)
 ├── scripts/
 │   ├── auto-sync.sh            # Automated sync with secret scanning
 │   ├── sync-status.sh          # Health monitoring

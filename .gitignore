@@ -70,3 +70,6 @@ pubring.*
 .last-sync
 .sync-status
 .sync.log
+
+# Zsh machine-specific overrides
+zsh/.zshrc.local

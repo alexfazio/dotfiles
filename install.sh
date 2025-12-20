@@ -56,6 +56,9 @@ ln -sf "$DOTFILES_DIR/nvim/lazyvim.json" ~/.config/nvim/lazyvim.json
 ln -sf "$DOTFILES_DIR/nvim/stylua.toml" ~/.config/nvim/stylua.toml
 ln -sf "$DOTFILES_DIR/nvim/lua" ~/.config/nvim/lua
 
+# Zsh
+ln -sf "$DOTFILES_DIR/zsh/.zshrc" ~/.zshrc
+
 echo "Symlinks created."
 
 # =============================================================================
@@ -116,24 +119,6 @@ if [[ "$SKIP_SYNC" == "false" ]] && [[ "$(uname)" == "Darwin" ]]; then
 fi
 
 # =============================================================================
-# SHELL INTEGRATION
-# =============================================================================
-
-echo ""
-echo "=== Optional: Add to your ~/.zshrc ==="
-echo ""
-echo '# Dotfiles status alias'
-echo 'alias dfs="~/.dotfiles/scripts/sync-status.sh"'
-echo ''
-echo '# Load secrets (gitignored)'
-echo '[ -f ~/.secrets.env ] && source ~/.secrets.env'
-echo ''
-echo '# Warn if dotfiles sync is stale'
-# shellcheck disable=SC2016  # Intentionally literal - user copies this to zshrc
-echo '$HOME/.dotfiles/scripts/sync-status.sh --check 2>/dev/null'
-echo ""
-
-# =============================================================================
 # DONE
 # =============================================================================
 
@@ -141,5 +126,4 @@ echo "Dotfiles installed successfully!"
 echo ""
 echo "Next steps:"
 echo "  1. Edit ~/.secrets.env with your API keys"
-echo "  2. Add shell integration above to ~/.zshrc"
-echo "  3. Run 'dfs' to check sync status"
+echo "  2. Open a new terminal and run 'dfs' to check sync status"
