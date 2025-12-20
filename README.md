@@ -1,4 +1,4 @@
-# Dotfiles
+# Jobfiles
 
 Personal dotfiles for macOS, managed with traditional symlinks and automated sync.
 
