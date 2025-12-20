@@ -295,7 +295,3 @@ cd ~/.dotfiles && ./install.sh
 ## License
 
 MIT
-
----
-
-*Managed with [Claude Code](https://claude.com/claude-code)*
