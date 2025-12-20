@@ -122,7 +122,8 @@ main() {
     fi
 
     # Commit
-    local commit_msg="Auto-sync: $(date '+%Y-%m-%d %H:%M')"
+    local commit_msg
+    commit_msg="Auto-sync: $(date '+%Y-%m-%d %H:%M')"
     if ! git commit -m "$commit_msg" 2>&1 | tee -a "$LOG_FILE"; then
         notify_error "Commit failed!"
         exit 1

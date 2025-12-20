@@ -129,7 +129,8 @@ echo '# Load secrets (gitignored)'
 echo '[ -f ~/.secrets.env ] && source ~/.secrets.env'
 echo ''
 echo '# Warn if dotfiles sync is stale'
-echo '~/.dotfiles/scripts/sync-status.sh --check 2>/dev/null'
+# shellcheck disable=SC2016  # Intentionally literal - user copies this to zshrc
+echo '$HOME/.dotfiles/scripts/sync-status.sh --check 2>/dev/null'
 echo ""
 
 # =============================================================================
