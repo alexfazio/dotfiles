@@ -1,0 +1,86 @@
+# Ghostty Configuration
+# Native Ghostty Tabs Configuration
+
+# ============================================
+# THEME - Auto-switches with macOS appearance
+# ============================================
+theme = dark:Catppuccin Frappe,light:Catppuccin Latte
+
+# ============================================
+# WINDOW PADDING
+# ============================================
+window-padding-x = 20
+window-padding-y = 20
+
+# ============================================
+# TAB BAR VISIBILITY
+# ============================================
+window-show-tab-bar = always
+
+# ============================================
+# TAB MANAGEMENT
+# ============================================
+keybind = super+t=new_tab
+keybind = super+w=close_surface
+keybind = super+shift+bracket_left=previous_tab
+keybind = super+shift+bracket_right=next_tab
+
+# ============================================
+# TAB SELECTION BY NUMBER
+# ============================================
+keybind = super+1=goto_tab:1
+keybind = super+2=goto_tab:2
+keybind = super+3=goto_tab:3
+keybind = super+4=goto_tab:4
+keybind = super+5=goto_tab:5
+keybind = super+6=goto_tab:6
+keybind = super+7=goto_tab:7
+keybind = super+8=goto_tab:8
+keybind = super+9=last_tab
+
+# ============================================
+# SPLITS - Direct Navigation (super+hjkl)
+# ============================================
+keybind = super+k=unbind
+keybind = super+h=goto_split:left
+keybind = super+j=goto_split:down
+keybind = super+k=goto_split:up
+keybind = super+l=goto_split:right
+
+# ============================================
+# SPLITS - Leader Navigation (super+space > hjkl)
+# ============================================
+keybind = super+space>h=goto_split:left
+keybind = super+space>j=goto_split:down
+keybind = super+space>k=goto_split:up
+keybind = super+space>l=goto_split:right
+
+# ============================================
+# SPLITS - Resizing (super+space > shift+hjkl)
+# ============================================
+keybind = super+space>shift+h=resize_split:left,50
+keybind = super+space>shift+j=resize_split:down,50
+keybind = super+space>shift+k=resize_split:up,50
+keybind = super+space>shift+l=resize_split:right,50
+
+# ============================================
+# SPLITS - Creation
+# ============================================
+keybind = super+space>s=new_split:down
+keybind = super+space>v=new_split:right
+keybind = super+space>minus=new_split:down
+keybind = super+space>shift+backslash=new_split:right
+
+# ============================================
+# SPLITS - Management
+# ============================================
+keybind = super+space>x=close_surface
+keybind = super+space>q=close_surface
+keybind = super+space>z=toggle_split_zoom
+keybind = super+space>bracket_left=copy_to_clipboard
+
+# ============================================
+# macOS Settings
+# ============================================
+macos-titlebar-style = tabs
+clipboard-paste-protection = false

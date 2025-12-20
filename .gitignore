@@ -1,0 +1,12 @@
+# Backup files
+*.backup
+*.bak
+*.bak.*
+.DS_Store
+
+# Yazi temp files
+.claude-history.md
+keymap.toml-*
+
+# Neovim runtime files
+.neoconf.json
