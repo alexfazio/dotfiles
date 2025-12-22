@@ -4,7 +4,7 @@
 # ============================================
 # THEME - Auto-switches with macOS appearance
 # ============================================
-theme = dark:Catppuccin Frappe,light:Catppuccin Latte
+theme = dark:Catppuccin Macchiato,light:Catppuccin Latte
 
 # ============================================
 # WINDOW PADDING
