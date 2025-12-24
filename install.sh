@@ -29,7 +29,7 @@ echo "Setting up dotfiles..."
 # =============================================================================
 
 # Create config directories
-mkdir -p ~/.config/{aerospace,ghostty,wezterm,yazi,nvim}
+mkdir -p ~/.config/{aerospace,ghostty,kitty,wezterm,yazi,nvim}
 
 echo "Creating symlinks..."
 
@@ -39,6 +39,11 @@ ln -sf "$DOTFILES_DIR/aerospace/aerospace.toml" ~/.config/aerospace/aerospace.to
 # Ghostty
 ln -sf "$DOTFILES_DIR/ghostty/config" ~/.config/ghostty/config
 ln -sf "$DOTFILES_DIR/ghostty/tmux-attach.sh" ~/.config/ghostty/tmux-attach.sh
+
+# Kitty
+ln -sf "$DOTFILES_DIR/kitty/kitty.conf" ~/.config/kitty/kitty.conf
+ln -sf "$DOTFILES_DIR/kitty/splits.conf" ~/.config/kitty/splits.conf
+ln -sf "$DOTFILES_DIR/kitty/themes" ~/.config/kitty/themes
 
 # WezTerm
 ln -sf "$DOTFILES_DIR/wezterm/wezterm.lua" ~/.config/wezterm/wezterm.lua

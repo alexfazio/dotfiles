@@ -8,6 +8,7 @@ Personal dotfiles for macOS, managed with traditional symlinks and automated syn
 |-------------|-----------------|-------------|
 | **AeroSpace** | `aerospace/` | Tiling window manager for macOS |
 | **Ghostty** | `ghostty/` | GPU-accelerated terminal emulator |
+| **Kitty** | `kitty/` | GPU-based terminal emulator |
 | **WezTerm** | `wezterm/` | Cross-platform terminal emulator |
 | **Yazi** | `yazi/` | Terminal file manager |
 | **Neovim** | `nvim/` | LazyVim-based Neovim configuration |
@@ -43,6 +44,7 @@ Files live in `~/.dotfiles/` and are symlinked to their expected locations:
 ```
 ~/.dotfiles/aerospace/aerospace.toml  →  ~/.config/aerospace/aerospace.toml
 ~/.dotfiles/ghostty/config            →  ~/.config/ghostty/config
+~/.dotfiles/kitty/*                   →  ~/.config/kitty/*
 ~/.dotfiles/wezterm/wezterm.lua       →  ~/.config/wezterm/wezterm.lua
 ~/.dotfiles/yazi/*.toml               →  ~/.config/yazi/*.toml
 ~/.dotfiles/nvim/*                    →  ~/.config/nvim/*
