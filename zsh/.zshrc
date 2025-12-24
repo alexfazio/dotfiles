@@ -74,6 +74,7 @@ proxy_claude() {
 #   -mo   → --model opus
 #   -ms   → --model sonnet
 #   -mh   → --model haiku
+#   -glm  → --settings ~/.claude/zai-settings.json (GLM 4.7 via Z.AI)
 #
 # Project shortcuts (dynamic):
 #   @<project>  → Opens session in ~/Documents/GitHub/<project>
@@ -90,6 +91,8 @@ proxy_claude() {
 #   cc -dsp -mh -c        → claude --dangerously-skip-permissions --model haiku --continue
 #   cc @incide            → opens claude in ~/Documents/GitHub/incide
 #   cc -dsp -mo @incide   → skip permissions + opus in incide project
+#   cc -glm               → claude with GLM 4.7 via Z.AI
+#   cc -glm -dsp @incide  → GLM mode + skip permissions in incide project
 #
 cc() {
     local dir=""
@@ -119,6 +122,8 @@ cc() {
             args+=(--model sonnet)
         elif [[ "$arg" == "-mh" ]]; then
             args+=(--model haiku)
+        elif [[ "$arg" == "-glm" ]]; then
+            args+=(--settings ~/.claude/zai-settings.json)
         else
             args+=("$arg")
         fi
@@ -147,7 +152,7 @@ _cc_complete() {
         compadd -P '@' -- "${projects[@]}"
     # Complete flags
     elif [[ "$cur" == -* ]]; then
-        compadd -- -dsp -mo -ms -mh -r -c -p
+        compadd -- -dsp -mo -ms -mh -glm -r -c -p
     fi
 }
 # Register completion if zsh completion system is available
