@@ -1,0 +1,137 @@
+#!/bin/bash
+# =============================================================================
+# yadm bootstrap - New machine setup
+# =============================================================================
+# This script runs automatically after `yadm clone --bootstrap` or can be
+# run manually with `yadm bootstrap`.
+#
+# It handles:
+#   - Machine role detection (primary vs secondary)
+#   - Push protection for secondary machines
+#   - Homebrew and essential tool installation
+#   - Secret decryption
+#   - Alternate symlink creation
+# =============================================================================
+
+set -e
+
+echo "=== yadm bootstrap ==="
+echo ""
+
+# -----------------------------------------------------------------------------
+# DETECT MACHINE
+# -----------------------------------------------------------------------------
+
+OS=$(uname -s)
+HOSTNAME=$(hostname -s)
+
+echo "Machine: $HOSTNAME ($OS)"
+echo ""
+
+# -----------------------------------------------------------------------------
+# SET MACHINE CLASS
+# -----------------------------------------------------------------------------
+
+PRIMARY_HOSTNAME="Alex-MBP"
+
+if [[ "$HOSTNAME" == "$PRIMARY_HOSTNAME" ]]; then
+    yadm config local.class primary
+    echo "[OK] Set as PRIMARY machine (can push changes)"
+else
+    yadm config local.class secondary
+    echo "[OK] Set as SECONDARY machine (pull-only)"
+
+    # Disable push for secondary machines
+    yadm remote set-url --push origin no_push
+    echo "[OK] Push disabled (remote set to 'no_push')"
+fi
+
+echo ""
+
+# -----------------------------------------------------------------------------
+# INSTALL HOMEBREW (macOS only)
+# -----------------------------------------------------------------------------
+
+if [[ "$OS" == "Darwin" ]]; then
+    if ! command -v brew &>/dev/null; then
+        echo "Installing Homebrew..."
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+        # Add Homebrew to PATH for this session
+        if [[ -d /opt/homebrew ]]; then
+            eval "$(/opt/homebrew/bin/brew shellenv)"
+        fi
+        echo "[OK] Homebrew installed"
+    else
+        echo "[OK] Homebrew already installed"
+    fi
+    echo ""
+fi
+
+# -----------------------------------------------------------------------------
+# INSTALL ESSENTIAL TOOLS
+# -----------------------------------------------------------------------------
+
+if command -v brew &>/dev/null; then
+    echo "Installing essential tools..."
+
+    # List of essential tools
+    TOOLS=(zoxide fzf fd ripgrep neovim)
+
+    for tool in "${TOOLS[@]}"; do
+        if ! command -v "$tool" &>/dev/null; then
+            echo "  Installing $tool..."
+            brew install "$tool" 2>/dev/null || true
+        else
+            echo "  [OK] $tool already installed"
+        fi
+    done
+    echo ""
+fi
+
+# -----------------------------------------------------------------------------
+# DECRYPT SECRETS (if archive exists)
+# -----------------------------------------------------------------------------
+
+ARCHIVE="$HOME/.local/share/yadm/archive"
+if [[ -f "$ARCHIVE" ]]; then
+    echo "Encrypted archive found. Run 'yadm decrypt' to decrypt secrets."
+    echo "(Skipping automatic decryption - requires password)"
+    echo ""
+fi
+
+# -----------------------------------------------------------------------------
+# CREATE ALTERNATE SYMLINKS
+# -----------------------------------------------------------------------------
+
+echo "Creating alternate symlinks..."
+yadm alt
+echo "[OK] Alternates created"
+echo ""
+
+# -----------------------------------------------------------------------------
+# SUMMARY
+# -----------------------------------------------------------------------------
+
+echo "=== Bootstrap Complete ==="
+echo ""
+echo "Next steps:"
+echo "  1. Open a new terminal or run: source ~/.zshrc"
+echo "  2. Check status: yadm status"
+
+MACHINE_CLASS=$(yadm config local.class)
+if [[ "$MACHINE_CLASS" == "secondary" ]]; then
+    echo ""
+    echo "This is a SECONDARY machine:"
+    echo "  - Push is disabled (changes stay local)"
+    echo "  - To update from remote: yadm pull"
+    echo "  - To enable push: yadm remote set-url --push origin git@github.com:alexfazio/dotfiles.git"
+fi
+
+if [[ -f "$ARCHIVE" ]]; then
+    echo ""
+    echo "Secrets:"
+    echo "  - Run 'yadm decrypt' to decrypt (requires password)"
+fi
+
+echo ""

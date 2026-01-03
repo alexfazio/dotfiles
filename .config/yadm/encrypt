@@ -1,0 +1,22 @@
+# =============================================================================
+# yadm encryption patterns
+# =============================================================================
+# Files matching these patterns will be encrypted by `yadm encrypt`
+# and decrypted by `yadm decrypt`.
+#
+# Run `yadm encrypt` after adding secrets, then commit the archive.
+# The encrypted archive is stored at ~/.local/share/yadm/archive
+# =============================================================================
+
+# Secrets environment file
+.secrets.env
+
+# SSH private keys (but not public keys)
+.ssh/id_*
+!.ssh/*.pub
+
+# GPG private keys
+.gnupg/private-keys-v1.d/*
+
+# GitHub CLI authentication
+.config/gh/hosts.yml

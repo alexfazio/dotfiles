@@ -1,0 +1,358 @@
+# Place a copy of this config to ~/.aerospace.toml
+# After that, you can edit ~/.aerospace.toml to your liking
+
+# It's not necessary to copy all keys to your config.
+# If the key is missing in your config, "default-config.toml" will serve as a fallback
+
+# You can use it to add commands that run after AeroSpace startup.
+# Available commands : https://nikitabobko.github.io/AeroSpace/commands
+# Commands to run after AeroSpace startup
+after-startup-command = []
+
+# Start AeroSpace at login
+start-at-login = true
+
+# Normalizations. See: https://nikitabobko.github.io/AeroSpace/guide#normalization
+enable-normalization-flatten-containers = true
+enable-normalization-opposite-orientation-for-nested-containers = true
+
+# See: https://nikitabobko.github.io/AeroSpace/guide#layouts
+# The 'accordion-padding' specifies the size of accordion padding
+# You can set 0 to disable the padding feature
+accordion-padding = 30
+
+# Possible values: tiles|accordion
+default-root-container-layout = 'tiles'
+
+# Possible values: horizontal|vertical|auto
+# 'auto' means: wide monitor (anything wider than high) gets horizontal orientation,
+#               tall monitor (anything higher than wide) gets vertical orientation
+default-root-container-orientation = 'auto'
+
+# Possible values: (qwerty|dvorak)
+# See https://nikitabobko.github.io/AeroSpace/guide#key-mapping
+key-mapping.preset = 'qwerty'
+
+# Mouse follows focus when focused monitor changes
+# Drop it from your config, if you don't like this behavior
+# See https://nikitabobko.github.io/AeroSpace/guide#on-focus-changed-callbacks
+# See https://nikitabobko.github.io/AeroSpace/commands#move-mouse
+# on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
+# on-focus-changed = "move-mouse window-lazy-center"
+
+# Gaps between windows (inner-*) and between monitor edges (outer-*).
+# Possible values:
+# - Constant:     gaps.outer.top = 8
+# - Per monitor:  gaps.outer.top = [{ monitor.main = 16 }, { monitor."some-pattern" = 32 }, 24]
+#                 In this example, 24 is a default value when there is no match.
+#                 Monitor pattern is the same as for 'workspace-to-monitor-force-assignment'.
+#                 See: https://nikitabobko.github.io/AeroSpace/guide#assign-workspaces-to-monitors
+[gaps]
+inner.horizontal = 18
+inner.vertical = 18
+outer.left = 18
+outer.bottom = 18
+outer.top = 18
+outer.right = 18
+
+# 'main' binding mode declaration
+# See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
+# 'main' binding mode must be always presented
+[mode.main.binding]
+
+# All possible keys:
+# - Letters.        a, b, c, ..., z
+# - Numbers.        0, 1, 2, ..., 9
+# - Keypad numbers. keypad0, keypad1, keypad2, ..., keypad9
+# - F-keys.         f1, f2, ..., f20
+# - Special keys.   minus, equal, period, comma, slash, backslash, quote, semicolon, backtick,
+#                   leftSquareBracket, rightSquareBracket, space, enter, esc, backspace, tab
+# - Keypad special. keypadClear, keypadDecimalMark, keypadDivide, keypadEnter, keypadEqual,
+#                   keypadMinus, keypadMultiply, keypadPlus
+# - Arrows.         left, down, up, right
+
+# All possible modifiers: cmd, alt, ctrl, shift
+
+# All possible commands: https://nikitabobko.github.io/AeroSpace/commands
+
+# You can uncomment this line to open up terminal with alt + enter shortcut
+# See: https://nikitabobko.github.io/AeroSpace/commands#exec-and-forget
+# alt-enter = 'exec-and-forget open -n /System/Applications/Utilities/Terminal.app'
+
+# See: https://nikitabobko.github.io/AeroSpace/commands#layout
+cmd-ctrl-alt-shift-slash = 'layout tiles horizontal vertical'
+cmd-ctrl-alt-shift-comma = 'layout accordion horizontal vertical'
+
+# See: https://nikitabobko.github.io/AeroSpace/commands#focus
+alt-h = 'focus left'
+alt-j = 'focus down'
+alt-k = 'focus up'
+alt-l = 'focus right'
+
+# See: https://nikitabobko.github.io/AeroSpace/commands#move
+cmd-ctrl-alt-shift-h = 'move left'
+cmd-ctrl-alt-shift-j = 'move down'
+cmd-ctrl-alt-shift-k = 'move up'
+cmd-ctrl-alt-shift-l = 'move right'
+
+
+# See: https://nikitabobko.github.io/AeroSpace/commands#workspace
+alt-m = 'workspace MSG'
+alt-n = 'workspace NTS'
+alt-p = 'workspace PRG'
+alt-r = 'workspace REM'
+alt-t = 'workspace TER'
+alt-v = 'workspace VID'
+alt-w = 'workspace WEB'
+alt-a = 'workspace AI'
+alt-d = 'workspace DIR'
+alt-g = 'workspace GFX'
+
+# See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
+cmd-ctrl-alt-shift-m = 'move-node-to-workspace MSG'
+cmd-ctrl-alt-shift-n = 'move-node-to-workspace NTS'
+cmd-ctrl-alt-shift-p = 'move-node-to-workspace PRG'
+cmd-ctrl-alt-shift-r = 'move-node-to-workspace REM'
+cmd-ctrl-alt-shift-t = 'move-node-to-workspace TER'
+cmd-ctrl-alt-shift-v = 'move-node-to-workspace VID'
+cmd-ctrl-alt-shift-w = 'move-node-to-workspace WEB'
+cmd-ctrl-alt-shift-a = 'move-node-to-workspace AI'
+cmd-ctrl-alt-shift-d = 'move-node-to-workspace DIR'
+cmd-ctrl-alt-shift-g = 'move-node-to-workspace GFX'
+
+# Note: D workspace move command uses 'd' for directory, 'f' available for fullscreen
+cmd-ctrl-alt-shift-f = 'fullscreen --no-outer-gaps'
+cmd-ctrl-alt-shift-equal = 'fullscreen --no-outer-gaps'
+
+# See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
+alt-tab = 'workspace-back-and-forth'
+# See: https://nikitabobko.github.io/AeroSpace/commands#move-workspace-to-monitor
+cmd-ctrl-alt-shift-tab = 'move-workspace-to-monitor --wrap-around next'
+
+# See: https://nikitabobko.github.io/AeroSpace/commands#mode
+cmd-ctrl-alt-shift-semicolon = 'mode service'
+
+# Note: This conflicts with the R workspace move command above
+# You may want to change this to a different key combination
+cmd-ctrl-alt-shift-z = 'mode resize'
+
+[mode.resize.binding]
+h = 'resize width -50'
+j = 'resize height +50'
+k = 'resize height -50'
+l = 'resize width +50'
+b = 'balance-sizes'
+
+
+# See: https://nikitabobko.github.io/AeroSpace/commands#resize
+minus = 'resize smart -50'
+equal = 'resize smart +50'
+
+enter = 'mode main'
+esc = 'mode main'
+
+# 'service' binding mode declaration.
+# See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
+[mode.service.binding]
+esc = ['reload-config', 'mode main']
+r = ['flatten-workspace-tree', 'mode main'] # reset layout
+#s = ['layout sticky tiling', 'mode main'] # sticky is not yet supported https://github.com/nikitabobko/AeroSpace/issues/2
+f = [
+    'layout floating tiling',
+    'mode main',
+] # Toggle between floating and tiling layout
+backspace = ['close-all-windows-but-current', 'mode main']
+
+ctrl-shift-h = ['join-with left', 'mode main']
+ctrl-shift-j = ['join-with down', 'mode main']
+ctrl-shift-k = ['join-with up', 'mode main']
+ctrl-shift-l = ['join-with right', 'mode main']
+
+# Application window detection rules
+# Note: Use `osascript -e 'id of app "AppName"'` to detect correct app bundle identifiers
+
+# Ghostty - float to prevent tabs from being managed as separate windows
+# IMPORTANT: Use Ghostty's native tab switching, not AeroSpace focus:
+#   - Cmd+Shift+] = next tab
+#   - Cmd+Shift+[ = previous tab
+#   - Cmd+1/2/3... = jump to tab
+# See: https://ghostty.org/docs/help/macos-tiling-wms
+[[on-window-detected]]
+if.app-id = 'com.mitchellh.ghostty'
+run = ['layout floating', 'move-node-to-workspace TER']
+
+[[on-window-detected]]
+if.app-id = 'com.TickTick.task.mac'
+run = "layout floating"
+
+# Password manager - always float
+[[on-window-detected]]
+if.app-id = 'com.bitwarden.desktop'
+run = "layout floating"
+
+[[on-window-detected]]
+if.app-id = 'com.github.wez.wezterm'
+run = "move-node-to-workspace TER"
+
+[[on-window-detected]]
+if.app-id = 'com.apple.Terminal'
+run = "move-node-to-workspace PRG"
+
+[[on-window-detected]]
+if.app-id = 'com.goodsnooze.MacWhisper'
+run = "move-node-to-workspace VID"
+
+# Browser extension popups for Chrome - must come BEFORE general Chrome rule
+[[on-window-detected]]
+if.app-id = 'com.google.Chrome'
+if.window-title-regex-substring = '(extension|popup|1password|bitwarden|lastpass|dashlane)'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.google.Chrome'
+run = "move-node-to-workspace WEB"
+
+# incide-portable (Tauri dev builds have NULL bundle ID, so match by app name)
+[[on-window-detected]]
+if.app-name-regex-substring = 'incide-portable'
+run = "move-node-to-workspace WEB"
+
+[[on-window-detected]]
+if.app-id = 'io.remnote'
+run = "move-node-to-workspace REM"
+
+# Browser extension popups for Arc - must come BEFORE general Arc rule
+[[on-window-detected]]
+if.app-id = 'company.thebrowser.Browser'
+if.window-title-regex-substring = '(extension|popup|1password|bitwarden|lastpass|dashlane)'
+run = 'layout floating'
+
+# Browser apps
+[[on-window-detected]]
+if.app-id = 'app.zen-browser.zen'
+run = "move-node-to-workspace WEB"
+
+[[on-window-detected]]
+if.app-id = 'org.mozilla.firefox'
+run = "move-node-to-workspace WEB"
+
+[[on-window-detected]]
+if.app-id = 'company.thebrowser.Browser'
+run = "move-node-to-workspace WEB"
+
+# Messaging apps
+[[on-window-detected]]
+if.app-id = 'com.tdesktop.Telegram'
+run = "move-node-to-workspace MSG"
+
+[[on-window-detected]]
+if.app-id = 'net.whatsapp.WhatsApp'
+run = "move-node-to-workspace MSG"
+
+[[on-window-detected]]
+if.app-id = 'com.freron.MailMate'
+run = "move-node-to-workspace MSG"
+
+[[on-window-detected]]
+if.app-id = 'com.automattic.beeper.desktop'
+run = "move-node-to-workspace MSG"
+
+[[on-window-detected]]
+if.app-id = 'com.tinyspeck.slackmacgap'
+run = "move-node-to-workspace MSG"
+
+# Code editors
+[[on-window-detected]]
+if.app-id = 'dev.zed.Zed'
+run = "move-node-to-workspace PRG"
+
+[[on-window-detected]]
+if.app-id = 'com.todesktop.230313mzl4w4u92'
+run = "move-node-to-workspace PRG"
+
+# AI Chatbots
+[[on-window-detected]]
+if.app-id = 'com.openai.chat'
+run = "move-node-to-workspace AI"
+
+[[on-window-detected]]
+if.app-id = 'com.anthropic.claudefordesktop'
+run = "move-node-to-workspace AI"
+
+[[on-window-detected]]
+if.app-id = 'co.podzim.BoltGPT-setapp'
+run = "move-node-to-workspace AI"
+
+# File manager - Move to DIR workspace and make floating
+[[on-window-detected]]
+if.app-id = 'com.apple.finder'
+run = ['layout floating', 'move-node-to-workspace DIR']
+
+# Video editing apps
+[[on-window-detected]]
+if.app-id = 'com.lemon.lvoverseas'
+run = "move-node-to-workspace VID"
+
+[[on-window-detected]]
+if.app-id = 'com.charliemonroe.Downie-setapp'
+run = "move-node-to-workspace VID"
+
+[[on-window-detected]]
+if.app-id = 'com.TechSmith.Snagit2024'
+run = "move-node-to-workspace VID"
+
+[[on-window-detected]]
+if.app-id = 'com.agiletortoise.Drafts-OSX'
+run = "move-node-to-workspace NTS"
+
+[[on-window-detected]]
+if.app-id = 'notion.id'
+run = "move-node-to-workspace NTS"
+
+[[on-window-detected]]
+if.app-id = 'com.apple.MobileSMS'
+run = "move-node-to-workspace MSG"
+
+# Graphics/Photo editing apps
+[[on-window-detected]]
+if.app-id = 'com.pixelmatorteam.pixelmator.x'
+run = ['layout floating', 'move-node-to-workspace GFX']
+
+# Screen Studio - always float
+[[on-window-detected]]
+if.app-id = 'com.timpler.screenstudio'
+run = 'layout floating'
+
+# Force float system settings (updated for modern macOS)
+[[on-window-detected]]
+if.app-id = 'com.apple.systemsettings'
+run = 'layout floating'
+
+# Force float legacy system preferences (for older macOS)
+[[on-window-detected]]
+if.app-id = 'com.apple.systempreferences'
+run = 'layout floating'
+
+# Enhanced dialog pattern matching
+[[on-window-detected]]
+if.window-title-regex-substring = '(dialog|alert|preferences|settings|about|error|warning|confirm|properties|options|configuration)'
+check-further-callbacks = true
+run = 'layout floating'
+
+# Enhanced file dialog matching
+[[on-window-detected]]
+if.window-title-regex-substring = '(open|save|choose|select|import|export|browse|download|upload)'
+check-further-callbacks = true
+run = 'layout floating'
+
+# # Common application dialogs by app bundle
+# [[on-window-detected]]
+# if.app-id = 'com.apple.finder'
+# if.window-title-regex-substring = '(copy|move|delete|trash|info|get info)'
+# run = 'layout floating'
+
+# Adobe application dialogs
+[[on-window-detected]]
+if.app-id = 'com.adobe.Photoshop'
+if.window-title-regex-substring = '(new|open|save|export|import|color|brush|layer)'
+run = 'layout floating'

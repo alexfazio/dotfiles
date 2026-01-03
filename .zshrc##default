@@ -1,0 +1,102 @@
+# =============================================================================
+# PORTABLE ZSHRC - Base configuration for all machines
+# =============================================================================
+# This file is used as the default on machines without a hostname-specific
+# alternate. It contains only portable, defensive configurations.
+#
+# Machine-specific configs should use: .zshrc##hostname.<hostname>
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# PATH CONFIGURATION
+# -----------------------------------------------------------------------------
+
+# Homebrew (works on both Intel and Apple Silicon Macs)
+if [[ -d /opt/homebrew ]]; then
+    export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+elif [[ -d /usr/local/Homebrew ]]; then
+    export PATH="/usr/local/bin:$PATH"
+fi
+
+# User local binaries
+export PATH="$HOME/.local/bin:$PATH"
+
+# Go (if installed)
+[[ -d "$HOME/.local/opt/go/bin" ]] && export PATH="$PATH:$HOME/.local/opt/go/bin"
+[[ -d "$HOME/go/bin" ]] && export PATH="$PATH:$HOME/go/bin"
+
+# -----------------------------------------------------------------------------
+# VI MODE
+# -----------------------------------------------------------------------------
+
+# Enable vi mode
+bindkey -v
+
+# Reduce ESC delay for responsive vi mode (0.1s instead of 0.4s default)
+export KEYTIMEOUT=10
+
+# Keep useful emacs-style keybindings in INSERT mode
+bindkey -M viins '^R' history-incremental-search-backward  # Ctrl+R for history
+bindkey -M viins '^A' beginning-of-line                    # Ctrl+A for start
+bindkey -M viins '^E' end-of-line                          # Ctrl+E for end
+
+# Alt/Option + arrow keys in INSERT mode
+bindkey -M viins '^[[1;3D' backward-word     # Option + Left
+bindkey -M viins '^[[1;3C' forward-word      # Option + Right
+
+# -----------------------------------------------------------------------------
+# EDITOR
+# -----------------------------------------------------------------------------
+
+# Editor fallback chain: nvim > vim > vi
+if command -v nvim &>/dev/null; then
+    export EDITOR="nvim"
+    export VISUAL="nvim"
+elif command -v vim &>/dev/null; then
+    export EDITOR="vim"
+    export VISUAL="vim"
+else
+    export EDITOR="vi"
+    export VISUAL="vi"
+fi
+
+# -----------------------------------------------------------------------------
+# OPTIONAL TOOLS (only load if installed)
+# -----------------------------------------------------------------------------
+
+# Rust/Cargo
+[[ -f "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
+
+# zoxide - smarter cd command
+command -v zoxide &>/dev/null && eval "$(zoxide init zsh)"
+
+# fnm - Fast Node Manager
+if [[ -d /opt/homebrew/opt/fnm/bin ]]; then
+    eval "$(fnm env)"
+fi
+
+# envman
+[[ -s "$HOME/.config/envman/load.sh" ]] && source "$HOME/.config/envman/load.sh"
+
+# -----------------------------------------------------------------------------
+# MACHINE-SPECIFIC AND SECRETS
+# -----------------------------------------------------------------------------
+
+# Load machine-specific overrides if exists
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+
+# Load secrets (gitignored, decrypted by yadm)
+[[ -f ~/.secrets.env ]] && source ~/.secrets.env
+
+# -----------------------------------------------------------------------------
+# GPG (for yadm encryption)
+# -----------------------------------------------------------------------------
+
+# Fix GPG TTY for password prompts
+export GPG_TTY=$(tty)
+
+# -----------------------------------------------------------------------------
+# DOTFILES STATUS (yadm)
+# -----------------------------------------------------------------------------
+
+alias dfs="yadm status"

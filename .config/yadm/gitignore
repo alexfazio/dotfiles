@@ -1,0 +1,106 @@
+# =============================================================================
+# yadm gitignore - Files to never track
+# =============================================================================
+# This file is used by yadm (symlinked to ~/.local/share/yadm/repo.git/info/exclude)
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# SENSITIVE FILES
+# -----------------------------------------------------------------------------
+
+# Environment files with secrets
+*.env
+.env.*
+!*.env.example
+!*.env.template
+secrets.env
+.secrets
+.secrets.*
+
+# API keys and tokens
+*_token
+*_token.*
+*.key
+*.pem
+!*.key.pub
+api_key*
+auth_token*
+
+# Credentials
+credentials.json
+credentials.yaml
+*.credentials
+.netrc
+.npmrc
+.pypirc
+
+# SSH (except public keys - handled by encryption)
+# id_rsa
+# id_ed25519
+# id_ecdsa
+# *.ppk
+
+# AWS/Cloud
+.aws/credentials
+.aws/config
+*.tfvars
+*.tfstate*
+
+# GPG
+*.gpg
+secring.*
+pubring.*
+
+# Password stores
+.password-store/
+*.kdbx
+
+# -----------------------------------------------------------------------------
+# SYSTEM FILES
+# -----------------------------------------------------------------------------
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Backup files
+*.backup
+*.bak
+*.bak.*
+*~
+*.swp
+*.swo
+
+# -----------------------------------------------------------------------------
+# APPLICATION CACHES
+# -----------------------------------------------------------------------------
+
+# Node
+node_modules/
+.npm/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Neovim
+.neoconf.json
+
+# Yazi temp files
+.claude-history.md
+keymap.toml-*
+
+# -----------------------------------------------------------------------------
+# SYNC STATE
+# -----------------------------------------------------------------------------
+
+# Old dotfiles sync (removed after migration)
+.last-sync
+.sync-status
+.sync.log

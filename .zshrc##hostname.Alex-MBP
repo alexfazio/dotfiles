@@ -1,0 +1,193 @@
+# =============================================================================
+# ALEX-MBP SPECIFIC ZSHRC
+# =============================================================================
+# Machine-specific configuration for Alex's MacBook Pro.
+# This file sources the portable base config and adds machine-specific settings.
+# =============================================================================
+
+# Source portable base config first
+source ~/.zshrc##default
+
+# -----------------------------------------------------------------------------
+# MACHINE-SPECIFIC PATHS
+# -----------------------------------------------------------------------------
+
+# Poetry
+export PATH="$HOME/Library/Application Support/pypoetry/bin:$PATH"
+
+# Poppler (PDF tools)
+export PATH="/opt/homebrew/opt/poppler/bin:$PATH"
+
+# OpenCode
+export PATH="$HOME/.opencode/bin:$PATH"
+
+# Antigravity
+export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
+
+# -----------------------------------------------------------------------------
+# EDITOR OVERRIDE
+# -----------------------------------------------------------------------------
+
+# Use nvim-wrapper to fix claude-code focus reporting bug
+# See: https://github.com/anthropics/claude-code/issues/10375
+export EDITOR="$HOME/.local/bin/nvim-wrapper"
+export VISUAL="$HOME/.local/bin/nvim-wrapper"
+
+# -----------------------------------------------------------------------------
+# CC-TRACE: mitmproxy configuration for Claude Code API interception
+# -----------------------------------------------------------------------------
+
+proxy_claude() {
+    export HTTP_PROXY=http://127.0.0.1:8080
+    export HTTPS_PROXY=http://127.0.0.1:8080
+    export http_proxy=http://127.0.0.1:8080
+    export https_proxy=http://127.0.0.1:8080
+    export NODE_EXTRA_CA_CERTS="$HOME/.mitmproxy/mitmproxy-ca-cert.pem"
+    export NODE_TLS_REJECT_UNAUTHORIZED=0
+
+    echo "Proxy configured for mitmproxy (http://127.0.0.1:8080)"
+    echo "Using CA cert: $NODE_EXTRA_CA_CERTS"
+    echo "Starting Claude Code..."
+
+    cc "$@"
+}
+
+# -----------------------------------------------------------------------------
+# CLAUDE CLI WRAPPER (cc)
+# -----------------------------------------------------------------------------
+# Custom short flags and project shortcuts for Claude Code.
+#
+# Custom flags:
+#   -dsp  -> --dangerously-skip-permissions
+#   -mo   -> --model opus
+#   -ms   -> --model sonnet
+#   -mh   -> --model haiku
+#   -glm  -> --settings ~/.claude/zai-settings.json (GLM 4.7 via Z.AI)
+#   -dh   -> --settings ~/.claude/no-hooks-settings.json (disable all hooks)
+#
+# Project shortcuts:
+#   @<project>  -> Opens session in ~/Documents/GitHub/<project>
+#
+# Examples:
+#   cc -dsp -mo           -> claude --dangerously-skip-permissions --model opus
+#   cc @incide            -> opens claude in ~/Documents/GitHub/incide
+#   cc -dsp -mo @incide   -> skip permissions + opus in incide project
+
+cc() {
+    local dir=""
+    local args=()
+    local github_base="$HOME/Documents/GitHub"
+
+    # First pass: Detect ambiguous -r usage
+    local all_args=("$@")
+    local arg_count=${#all_args[@]}
+    local i r_idx=0
+
+    for ((i=1; i<=arg_count; i++)); do
+        if [[ "${all_args[$i]}" == "-r" ]]; then
+            r_idx=$i
+            break
+        fi
+    done
+
+    if [[ $r_idx -gt 0 ]]; then
+        local next_idx=$((r_idx + 1))
+        if [[ $next_idx -le $arg_count ]]; then
+            local next_arg="${all_args[$next_idx]}"
+            if [[ "$next_arg" != -* ]] && ! { [[ "$next_arg" == @* ]] && [[ ${#next_arg} -gt 1 ]]; }; then
+                for ((i=next_idx+1; i<=arg_count; i++)); do
+                    local check="${all_args[$i]}"
+                    if [[ "$check" != -* ]] && ! { [[ "$check" == @* ]] && [[ ${#check} -gt 1 ]]; }; then
+                        echo "cc: ambiguous use of -r" >&2
+                        echo "" >&2
+                        echo "  -r is followed by '$next_arg', but '$check' also appears." >&2
+                        echo "  Unclear if '$next_arg' is session ID or '$check' is the query." >&2
+                        echo "" >&2
+                        echo "Suggested fixes:" >&2
+                        echo "  cc ... -r $next_arg \"$check\"   <- session+query at end" >&2
+                        echo "  cc ... -r                      <- use picker" >&2
+                        return 1
+                    fi
+                done
+            fi
+        fi
+    fi
+
+    # Second pass: Process arguments and build command
+    for arg in "$@"; do
+        if [[ "$arg" == @* ]] && [[ ${#arg} -gt 1 ]]; then
+            local project="${arg#@}"
+            local project_path="$github_base/$project"
+            if [[ -d "$project_path" ]]; then
+                if [[ -n "$dir" ]]; then
+                    echo "cc: multiple projects specified (already using ${dir##*/})" >&2
+                    return 1
+                fi
+                dir="$project_path"
+            else
+                echo "cc: project '$project' not found in $github_base" >&2
+                return 1
+            fi
+        elif [[ "$arg" == "-dsp" ]]; then
+            args+=(--dangerously-skip-permissions)
+        elif [[ "$arg" == "-mo" ]]; then
+            args+=(--model opus)
+        elif [[ "$arg" == "-ms" ]]; then
+            args+=(--model sonnet)
+        elif [[ "$arg" == "-mh" ]]; then
+            args+=(--model haiku)
+        elif [[ "$arg" == "-glm" ]]; then
+            args+=(--settings ~/.claude/zai-settings.json)
+        elif [[ "$arg" == "-dh" ]]; then
+            args+=(--settings ~/.claude/no-hooks-settings.json)
+        else
+            args+=("$arg")
+        fi
+    done
+
+    printf '\e[?1004l'  # Disable focus reporting before starting
+    if [[ -n "$dir" ]]; then
+        (cd "$dir" && command claude "${args[@]}")
+    else
+        command claude "${args[@]}"
+    fi
+    local exit_code=$?
+    printf '\e[?1004l'  # Re-disable after exit
+    return $exit_code
+}
+
+# Tab completion for cc
+_cc_complete() {
+    local github_base="$HOME/Documents/GitHub"
+    local cur="${words[CURRENT]}"
+
+    if [[ "$cur" == @* ]]; then
+        local prefix="${cur#@}"
+        local projects=("$github_base"/${prefix}*(/:t))
+        compadd -P '@' -- "${projects[@]}"
+    elif [[ "$cur" == -* ]]; then
+        compadd -- -dsp -mo -ms -mh -glm -dh -r -c -p
+    fi
+}
+(( $+functions[compdef] )) && compdef _cc_complete cc
+
+# -----------------------------------------------------------------------------
+# GHOSTTY FOCUS REPORTING FIX
+# -----------------------------------------------------------------------------
+# Ghostty's shell integration re-enables focus reporting (DECSET 1004).
+# This causes escape sequences in claude-cli when using Cmd+Tab.
+# Must be at END of file (after shell integration loads).
+
+# Map focus reporting escape sequences to nothing
+bindkey -s '\e[I' ''
+bindkey -s '\e[O' ''
+
+# Disable immediately
+printf '\e[?1004l'
+
+# Add precmd hook to keep it disabled
+_disable_focus_reporting() {
+    printf '\e[?1004l'
+}
+[[ -z "$precmd_functions" ]] && precmd_functions=()
+precmd_functions+=(_disable_focus_reporting)

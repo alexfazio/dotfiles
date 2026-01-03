@@ -1,0 +1,41 @@
+#!/bin/bash
+# Wrapper for nvim that aggressively disables focus reporting AFTER nvim exits
+# See: https://github.com/anthropics/claude-code/issues/10375
+
+# Log that wrapper was called
+echo "$(date): nvim-wrapper called with args: $*" >> /tmp/nvim-wrapper.log
+
+# Capture the TTY before nvim runs (in case it changes)
+MY_TTY=$(tty)
+echo "$(date): TTY is $MY_TTY" >> /tmp/nvim-wrapper.log
+
+nvim "$@"
+exit_code=$?
+
+# Try multiple methods to disable focus reporting
+# Method 1: /dev/tty
+printf '\e[?1004l' > /dev/tty 2>/dev/null && echo "$(date): Method 1 (/dev/tty) succeeded" >> /tmp/nvim-wrapper.log
+
+# Method 2: Original TTY
+printf '\e[?1004l' > "$MY_TTY" 2>/dev/null && echo "$(date): Method 2 ($MY_TTY) succeeded" >> /tmp/nvim-wrapper.log
+
+# Method 3: stdout (might work if connected to terminal)
+printf '\e[?1004l' 2>/dev/null
+
+# Method 4: stderr (sometimes works)
+printf '\e[?1004l' >&2 2>/dev/null
+
+# AGGRESSIVE: Background process with VERY fast polling (every 10ms for 5 seconds)
+(
+  for i in {1..500}; do
+    printf '\e[?1004l' > /dev/tty 2>/dev/null
+    printf '\e[?1004l' > "$MY_TTY" 2>/dev/null
+    sleep 0.01
+  done
+  echo "$(date): Background disabler finished" >> /tmp/nvim-wrapper.log
+) &>/dev/null &
+disown
+
+echo "$(date): nvim exited with code $exit_code, aggressive background disabler started (10ms interval)" >> /tmp/nvim-wrapper.log
+
+exit $exit_code

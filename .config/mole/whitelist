@@ -1,0 +1,28 @@
+# Custom whitelist additions (2025-12-28)
+# Preserves app window positions, unsaved documents, scroll positions
+~/Library/Saved Application State/*
+
+# Pre-commit hook environments - slow to rebuild
+~/.cache/pre-commit/*
+
+# Alfred workflow custom data
+~/Library/Caches/com.runningwithcrayons.Alfred/*
+
+# Developer package caches (2025-12-28)
+# Python packages via uv
+~/.cache/uv/*
+
+# Homebrew package downloads
+~/Library/Caches/Homebrew/*
+
+# Bun JavaScript runtime cache
+~/.bun/install/cache/*
+
+# Claude desktop logs
+~/Library/Logs/Claude/*
+
+# Apple ML model cache - avoids recompilation delay
+~/Library/Application Support/coreMLCache/*
+
+# Cursor IDE cached data - avoids re-indexing delay
+~/Library/Application Support/Cursor/CachedData/*
