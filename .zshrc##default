@@ -100,3 +100,40 @@ export GPG_TTY=$(tty)
 # -----------------------------------------------------------------------------
 
 alias dfs="yadm status"
+
+# -----------------------------------------------------------------------------
+# DOTFILES STALE CHECK (for secondary machines)
+# -----------------------------------------------------------------------------
+# Checks if dotfiles are behind remote and warns on shell startup.
+# Fetches in background to avoid blocking shell initialization.
+
+_yadm_stale_check() {
+    # Only run if yadm is installed
+    command -v yadm &>/dev/null || return 0
+
+    local FETCH_MARKER="$HOME/.local/share/yadm/.last-fetch"
+    local FETCH_INTERVAL=3600  # 1 hour in seconds
+    local NOW=$(date +%s)
+
+    # Create marker directory if needed
+    mkdir -p "$(dirname "$FETCH_MARKER")" 2>/dev/null
+
+    # Background fetch if enough time has passed
+    if [[ ! -f "$FETCH_MARKER" ]] || (( NOW - $(stat -f%m "$FETCH_MARKER" 2>/dev/null || echo 0) > FETCH_INTERVAL )); then
+        # Update marker and fetch in background (non-blocking)
+        touch "$FETCH_MARKER" 2>/dev/null
+        (
+            GIT_TERMINAL_PROMPT=0 yadm fetch origin 2>/dev/null
+        ) &|
+    fi
+
+    # Check if behind (uses cached fetch data, doesn't block)
+    local BEHIND=$(yadm rev-list --count HEAD..origin/main 2>/dev/null || echo 0)
+
+    if [[ "$BEHIND" -gt 0 ]]; then
+        echo "\033[33m[dotfiles] $BEHIND update(s) available. Run: yadm pull\033[0m"
+    fi
+}
+
+# Run stale check on shell startup (non-blocking)
+_yadm_stale_check
