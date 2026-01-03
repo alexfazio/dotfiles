@@ -187,12 +187,34 @@ When you run `yadm alt` (or clone/bootstrap), yadm symlinks the appropriate file
 
 ### Primary vs Secondary Machines
 
-| Machine | Hostname | Push | Pull |
-|---------|----------|------|------|
-| Primary | `Alex-MBP` | Yes | Yes |
-| Secondary | Any other | No (disabled) | Yes |
+| Machine | Hostname | Push | Pull | Auto-Sync |
+|---------|----------|------|------|-----------|
+| Primary | `Alex-MBP` | Yes | Yes | Hourly (launchd) |
+| Secondary | Any other | No (disabled) | Yes | Stale-check only |
 
 The bootstrap script detects hostname and configures accordingly. This prevents accidental config overwrites from test machines.
+
+### Automatic Sync
+
+**Primary machine:** A launchd agent runs hourly to commit and push any uncommitted changes to tracked files.
+
+```bash
+# Check sync log
+cat ~/.local/share/yadm/auto-sync.log
+
+# Manual sync (don't wait for hourly)
+~/.local/bin/yadm-auto-sync.sh
+
+# Stop/start auto-sync
+launchctl unload ~/Library/LaunchAgents/com.yadm.autosync.plist
+launchctl load ~/Library/LaunchAgents/com.yadm.autosync.plist
+```
+
+**All machines:** On shell startup, a background fetch checks for updates. If behind remote, you'll see:
+
+```
+[dotfiles] 3 update(s) available. Run: yadm pull
+```
 
 ### Secrets Encryption
 
@@ -227,8 +249,12 @@ The archive is safe to commit (encrypted), and `yadm decrypt` restores the files
 │       └── gitignore          # Never-track patterns
 ├── .gnupg/gpg-agent.conf
 ├── .local/
-│   ├── bin/nvim-wrapper       # Editor wrapper script
-│   └── share/yadm/archive     # Encrypted secrets
+│   ├── bin/
+│   │   ├── nvim-wrapper       # Editor wrapper script
+│   │   └── yadm-auto-sync.sh  # Hourly sync script (primary only)
+│   └── share/yadm/
+│       ├── archive            # Encrypted secrets
+│       └── auto-sync.log      # Sync history
 ├── .zshenv
 ├── .zshrc##default            # Portable base config
 └── .zshrc##hostname.Alex-MBP  # Machine-specific config
