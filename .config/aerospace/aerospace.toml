@@ -195,6 +195,10 @@ if.app-id = 'com.github.wez.wezterm'
 run = "move-node-to-workspace TER"
 
 [[on-window-detected]]
+if.app-id = 'net.kovidgoyal.kitty'
+run = "move-node-to-workspace TER"
+
+[[on-window-detected]]
 if.app-id = 'com.apple.Terminal'
 run = "move-node-to-workspace PRG"
 
@@ -307,6 +311,10 @@ run = "move-node-to-workspace NTS"
 
 [[on-window-detected]]
 if.app-id = 'notion.id'
+run = "move-node-to-workspace NTS"
+
+[[on-window-detected]]
+if.app-id = 'com.linear'
 run = "move-node-to-workspace NTS"
 
 [[on-window-detected]]
