@@ -63,6 +63,7 @@ proxy_claude() {
 #   -ms   -> --model sonnet
 #   -mh   -> --model haiku
 #   -glm  -> --settings ~/.claude/zai-settings.json (GLM 4.7 via Z.AI)
+#   -mm   -> --settings ~/.claude/minimax-settings.json (MiniMax M2.1)
 #   -dh   -> --settings ~/.claude/no-hooks-settings.json (disable all hooks)
 #
 # Project shortcuts:
@@ -138,6 +139,8 @@ cc() {
             args+=(--model haiku)
         elif [[ "$arg" == "-glm" ]]; then
             args+=(--settings ~/.claude/zai-settings.json)
+        elif [[ "$arg" == "-mm" ]]; then
+            args+=(--settings ~/.claude/minimax-settings.json)
         elif [[ "$arg" == "-dh" ]]; then
             args+=(--settings ~/.claude/no-hooks-settings.json)
         else
@@ -166,7 +169,7 @@ _cc_complete() {
         local projects=("$github_base"/${prefix}*(/:t))
         compadd -P '@' -- "${projects[@]}"
     elif [[ "$cur" == -* ]]; then
-        compadd -- -dsp -mo -ms -mh -glm -dh -r -c -p
+        compadd -- -dsp -mo -ms -mh -glm -mm -dh -r -c -p
     fi
 }
 (( $+functions[compdef] )) && compdef _cc_complete cc
