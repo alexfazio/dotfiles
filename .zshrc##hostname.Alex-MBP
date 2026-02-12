@@ -62,7 +62,7 @@ proxy_claude() {
 #   -mo   -> --model opus
 #   -ms   -> --model sonnet
 #   -mh   -> --model haiku
-#   -glm  -> --settings ~/.claude/zai-settings.json (GLM 4.7 via Z.AI)
+#   -glm  -> --settings ~/.claude/zai-settings.json (GLM 5.0 via Z.AI)
 #   -mm   -> --settings ~/.claude/minimax-settings.json (MiniMax M2.1)
 #   -dh   -> --settings ~/.claude/no-hooks-settings.json (disable all hooks)
 #
