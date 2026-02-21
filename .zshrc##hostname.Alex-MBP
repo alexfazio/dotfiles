@@ -19,7 +19,6 @@ export PATH="$HOME/Library/Application Support/pypoetry/bin:$PATH"
 export PATH="/opt/homebrew/opt/poppler/bin:$PATH"
 
 # OpenCode
-export PATH="$HOME/.opencode/bin:$PATH"
 
 # Antigravity
 export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
