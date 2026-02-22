@@ -193,3 +193,5 @@ _disable_focus_reporting() {
 }
 [[ -z "$precmd_functions" ]] && precmd_functions=()
 precmd_functions+=(_disable_focus_reporting)
+
+export PATH="$HOME/.bun/bin:$PATH"
