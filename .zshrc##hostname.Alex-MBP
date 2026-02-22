@@ -64,6 +64,7 @@ proxy_claude() {
 #   -glm  -> --settings ~/.claude/zai-settings.json (GLM 5.0 via Z.AI)
 #   -mm   -> --settings ~/.claude/minimax-settings.json (MiniMax M2.1)
 #   -dh   -> --settings ~/.claude/no-hooks-settings.json (disable all hooks)
+#   -bare -> zero-config mode: no settings layers, no MCPs, no hooks, no skills
 #
 # Project shortcuts:
 #   @<project>  -> Opens session in ~/Documents/GitHub/<project>
@@ -142,6 +143,8 @@ cc() {
             args+=(--settings ~/.claude/minimax-settings.json)
         elif [[ "$arg" == "-dh" ]]; then
             args+=(--settings ~/.claude/no-hooks-settings.json)
+        elif [[ "$arg" == "-bare" ]]; then
+            args+=(--setting-sources '' --settings ~/.claude/bare-settings.json --strict-mcp-config --disable-slash-commands)
         else
             args+=("$arg")
         fi
