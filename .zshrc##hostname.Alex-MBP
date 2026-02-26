@@ -143,8 +143,6 @@ cc() {
             args+=(--settings ~/.claude/minimax-settings.json)
         elif [[ "$arg" == "-dh" ]]; then
             args+=(--settings ~/.claude/no-hooks-settings.json)
-        elif [[ "$arg" == "-yolo" ]]; then
-            args+=(--settings ~/.claude/yolo-settings.json)
         elif [[ "$arg" == "-bare" ]]; then
             args+=(--setting-sources '' --settings ~/.claude/bare-settings.json --strict-mcp-config --disable-slash-commands)
         else
