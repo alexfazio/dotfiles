@@ -21,3 +21,10 @@ desc = "Yank selected files"
 on   = ["y", "c"]
 run  = ["yank", "plugin clipboard -- --action=copy"]
 desc = "Copy to Finder clipboard"
+
+# Examine menu (e prefix)
+# ed = diff two selected files in nvim
+[[mgr.prepend_keymap]]
+on   = ["e", "d"]
+run  = "shell 'nvim -d %s1 %s2' --block"
+desc = "Diff selected files in nvim"
