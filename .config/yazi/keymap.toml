@@ -26,5 +26,15 @@ desc = "Copy to Finder clipboard"
 # ed = diff two selected files in nvim
 [[mgr.prepend_keymap]]
 on   = ["e", "d"]
-run  = "shell 'nvim -d %s1 %s2' --block"
+run  = "shell 'nvim -d %s' --block"
 desc = "Diff selected files in nvim"
+
+[[mgr.prepend_keymap]]
+on   = ["e", "v"]
+run  = "shell 'nvim -d %s' --block"
+desc = "Diff selected files (vertical)"
+
+[[mgr.prepend_keymap]]
+on   = ["e", "h"]
+run  = "shell 'nvim -d -o %s' --block"
+desc = "Diff selected files (horizontal)"
