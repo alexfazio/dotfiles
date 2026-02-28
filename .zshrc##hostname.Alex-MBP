@@ -64,8 +64,8 @@ proxy_claude() {
 #   -glm  -> --settings ~/.claude/zai-settings.json (GLM 5.0 via Z.AI)
 #   -mm   -> --settings ~/.claude/minimax-settings.json (MiniMax M2.1)
 #   -dh   -> --settings ~/.claude/no-hooks-settings.json (disable all hooks)
-#   --yolo -> --settings ~/.claude/yolo-settings.json (autonomous yolo mode)
 #   -bare -> zero-config mode: no settings layers, no MCPs, no hooks, no skills
+#            (exclusive with -dh; combinable with -glm, -mm)
 #
 # Project shortcuts:
 #   @<project>  -> Opens session in ~/Documents/GitHub/<project>
@@ -74,13 +74,13 @@ proxy_claude() {
 #   cc -dsp -mo            -> claude --dangerously-skip-permissions --model opus
 #   cc @incide             -> opens claude in ~/Documents/GitHub/incide
 #   cc -dsp -mo @incide    -> skip permissions + opus in incide project
-#   cc --yolo @incide      -> autonomous yolo mode in incide project
+#   cc -bare @incide -mo   -> zero-config + opus in incide project
 
 cc() {
     local dir=""
     local args=()
     local github_base="$HOME/Documents/GitHub"
-    local has_yolo=false has_dh=false has_bare=false
+    local has_dh=false has_glm=false has_mm=false has_bare=false
 
     # First pass: Detect ambiguous -r usage
     local all_args=("$@")
@@ -141,15 +141,14 @@ cc() {
         elif [[ "$arg" == "-mh" ]]; then
             args+=(--model haiku)
         elif [[ "$arg" == "-glm" ]]; then
+            has_glm=true
             args+=(--settings ~/.claude/zai-settings.json)
         elif [[ "$arg" == "-mm" ]]; then
+            has_mm=true
             args+=(--settings ~/.claude/minimax-settings.json)
         elif [[ "$arg" == "-dh" ]]; then
             has_dh=true
             args+=(--settings ~/.claude/no-hooks-settings.json)
-        elif [[ "$arg" == "--yolo" ]]; then
-            has_yolo=true
-            args+=(--settings ~/.claude/yolo-settings.json)
         elif [[ "$arg" == "-bare" ]]; then
             has_bare=true
             args+=(--setting-sources '' --settings ~/.claude/bare-settings.json --strict-mcp-config --disable-slash-commands)
@@ -158,13 +157,9 @@ cc() {
         fi
     done
 
-    # Clash guard: -yolo requires hooks and slash commands
-    if $has_yolo && $has_dh; then
-        echo "cc: --yolo and -dh clash (--yolo needs hooks, -dh disables them)" >&2
-        return 1
-    fi
-    if $has_yolo && $has_bare; then
-        echo "cc: --yolo and -bare clash (--yolo needs hooks and slash commands)" >&2
+    # Clash guard: -bare already disables hooks, -dh is redundant
+    if $has_bare && $has_dh; then
+        echo "cc: -bare and -dh clash (-bare already disables hooks)" >&2
         return 1
     fi
 
@@ -189,7 +184,7 @@ _cc_complete() {
         local projects=("$github_base"/${prefix}*(/:t))
         compadd -P '@' -- "${projects[@]}"
     elif [[ "$cur" == -* ]]; then
-        compadd -- -dsp -mo -ms -mh -glm -mm -dh --yolo -r -c -p
+        compadd -- -dsp -mo -ms -mh -glm -mm -dh -bare -r -c -p
     fi
 }
 (( $+functions[compdef] )) && compdef _cc_complete cc
