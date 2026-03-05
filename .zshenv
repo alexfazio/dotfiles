@@ -17,4 +17,4 @@ export PATH="/opt/homebrew/opt/python@3.11/bin:$PATH"
 
 # Remove conflicting Python versions from PATH
 export PATH=$(echo $PATH | awk -v RS=: -v ORS=: '/Library\/Frameworks\/Python.framework\/Versions\/3.12\/bin/ {next} {print}' | sed 's/:$//')
-. "$HOME/.cargo/env"
+[[ -f "$HOME/.cargo/env" ]] && . "$HOME/.cargo/env"
