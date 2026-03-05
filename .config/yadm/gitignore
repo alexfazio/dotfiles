@@ -96,6 +96,9 @@ venv/
 .claude-history.md
 keymap.toml-*
 
+# Nushell runtime data
+Library/Application Support/nushell/history.*
+
 # -----------------------------------------------------------------------------
 # SYNC STATE
 # -----------------------------------------------------------------------------

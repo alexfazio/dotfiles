@@ -13,6 +13,9 @@ Personal dotfiles managed with [yadm](https://yadm.io) (Yet Another Dotfiles Man
 | **Kitty** | `.config/kitty/` | Alternative terminal with splits |
 | **WezTerm** | `.config/wezterm/` | Cross-platform terminal in Lua |
 | **Yazi** | `.config/yazi/` | Terminal file manager with plugins |
+| **Tmux** | `.tmux.conf` | Vim-style navigation, Ghostty compatibility |
+| **Nushell** | `Library/Application Support/nushell/` | Structured data shell (env, config) |
+| **Mole** | `.config/mole/` | macOS cleanup and optimization |
 | **GPG Agent** | `.gnupg/gpg-agent.conf` | Passphrase caching config |
 
 ---
@@ -169,6 +172,8 @@ curl -fsSL https://raw.githubusercontent.com/alexfazio/dotfiles/main/.config/nvi
 - `.config/kitty/` - Terminal config
 - `.config/wezterm/` - Terminal config
 - `.config/yazi/` - File manager config
+- `.tmux.conf` - Terminal multiplexer config
+- `Library/Application Support/nushell/` - Nushell shell config
 
 ---
 
@@ -263,6 +268,7 @@ If you accidentally stage a file with a secret:
 │   ├── aerospace/aerospace.toml
 │   ├── ghostty/config
 │   ├── kitty/*.conf
+│   ├── mole/whitelist
 │   ├── nvim/
 │   │   ├── init.lua
 │   │   └── lua/{config,plugins}/
@@ -274,6 +280,10 @@ If you accidentally stage a file with a secret:
 │       ├── gitignore          # Never-track patterns
 │       ├── gitleaks.toml      # False positive allowlist
 │       └── hooks/pre_commit   # Secret scanning hook
+├── .tmux.conf
+├── Library/Application Support/nushell/
+│   ├── config.nu               # Shell behavior, aliases
+│   └── env.nu                  # Environment, PATH, cargo
 ├── .gnupg/gpg-agent.conf
 ├── .local/
 │   ├── bin/
