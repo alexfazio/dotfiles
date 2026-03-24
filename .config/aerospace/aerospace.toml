@@ -107,6 +107,7 @@ alt-w = 'workspace WEB'
 alt-a = 'workspace AI'
 alt-d = 'workspace DIR'
 alt-g = 'workspace GFX'
+alt-x = 'workspace PAR'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
 cmd-ctrl-alt-shift-m = 'move-node-to-workspace MSG'
@@ -119,6 +120,7 @@ cmd-ctrl-alt-shift-w = 'move-node-to-workspace WEB'
 cmd-ctrl-alt-shift-a = 'move-node-to-workspace AI'
 cmd-ctrl-alt-shift-d = 'move-node-to-workspace DIR'
 cmd-ctrl-alt-shift-g = 'move-node-to-workspace GFX'
+cmd-ctrl-alt-shift-x = 'move-node-to-workspace PAR'
 
 # Note: D workspace move command uses 'd' for directory, 'f' available for fullscreen
 cmd-ctrl-alt-shift-f = 'fullscreen --no-outer-gaps'
@@ -196,7 +198,7 @@ run = "move-node-to-workspace TER"
 
 [[on-window-detected]]
 if.app-id = 'net.kovidgoyal.kitty'
-run = "move-node-to-workspace TER"
+run = ['layout floating', 'move-node-to-workspace TER']
 
 [[on-window-detected]]
 if.app-id = 'com.apple.Terminal'
@@ -214,7 +216,12 @@ run = 'layout floating'
 
 [[on-window-detected]]
 if.app-id = 'com.google.Chrome'
-run = "move-node-to-workspace WEB"
+run = "move-node-to-workspace PAR"
+
+# Discord
+[[on-window-detected]]
+if.app-id = 'com.hnc.Discord'
+run = "move-node-to-workspace PAR"
 
 # incide-portable (Tauri dev builds have NULL bundle ID, so match by app name)
 [[on-window-detected]]
@@ -263,7 +270,7 @@ run = "move-node-to-workspace MSG"
 
 [[on-window-detected]]
 if.app-id = 'com.tinyspeck.slackmacgap'
-run = "move-node-to-workspace MSG"
+run = "move-node-to-workspace PAR"
 
 # Code editors
 [[on-window-detected]]
