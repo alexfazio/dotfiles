@@ -211,3 +211,4 @@ _disable_focus_reporting() {
 precmd_functions+=(_disable_focus_reporting)
 
 export PATH="$HOME/.bun/bin:$PATH"
+eval "$(direnv hook zsh)"
