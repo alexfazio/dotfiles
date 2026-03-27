@@ -333,6 +333,11 @@ run = "move-node-to-workspace MSG"
 if.app-id = 'com.pixelmatorteam.pixelmator.x'
 run = ['layout floating', 'move-node-to-workspace GFX']
 
+# Fellow - always float
+[[on-window-detected]]
+if.app-id = 'com.electron.fellow'
+run = 'layout floating'
+
 # Screen Studio - always float
 [[on-window-detected]]
 if.app-id = 'com.timpler.screenstudio'
