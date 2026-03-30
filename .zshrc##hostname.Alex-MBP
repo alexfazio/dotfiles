@@ -212,3 +212,6 @@ precmd_functions+=(_disable_focus_reporting)
 
 export PATH="$HOME/.bun/bin:$PATH"
 eval "$(direnv hook zsh)"
+
+# bun completions
+[ -s "/Users/alex/.bun/_bun" ] && source "/Users/alex/.bun/_bun"
