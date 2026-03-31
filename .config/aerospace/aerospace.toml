@@ -216,7 +216,7 @@ run = 'layout floating'
 
 [[on-window-detected]]
 if.app-id = 'com.google.Chrome'
-run = "move-node-to-workspace PAR"
+run = ['layout floating', 'move-node-to-workspace PAR']
 
 # Discord
 [[on-window-detected]]

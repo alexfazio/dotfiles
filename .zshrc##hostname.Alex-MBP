@@ -215,3 +215,5 @@ eval "$(direnv hook zsh)"
 
 # bun completions
 [ -s "/Users/alex/.bun/_bun" ] && source "/Users/alex/.bun/_bun"
+
+. "/tmp/uv-local/env"
