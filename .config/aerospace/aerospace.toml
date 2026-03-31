@@ -208,6 +208,11 @@ run = "move-node-to-workspace PRG"
 if.app-id = 'com.goodsnooze.MacWhisper'
 run = "move-node-to-workspace VID"
 
+# Google Chrome for Testing - exclude from tiling
+[[on-window-detected]]
+if.app-id = 'com.google.chrome.for.testing'
+run = 'layout floating'
+
 # Browser extension popups for Chrome - must come BEFORE general Chrome rule
 [[on-window-detected]]
 if.app-id = 'com.google.Chrome'
