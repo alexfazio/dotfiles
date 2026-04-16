@@ -190,6 +190,23 @@ _cc_complete() {
 (( $+functions[compdef] )) && compdef _cc_complete cc
 
 # -----------------------------------------------------------------------------
+# SPRITE CONSOLE KEYBOARD PROTOCOL FIX
+# -----------------------------------------------------------------------------
+# When a Sprite sleeps (30s idle timeout), the WebSocket drops and any TUI app
+# running inside (Claude Code, Neovim) never sends the CSI u pop sequence.
+# This leaves the local terminal stuck in enhanced keyboard mode.
+# Fix: push/pop keyboard protocol flags around sprite commands — same pattern
+# as Kitty SSH kitten (kovidgoyal/kitty#9480).
+
+sprite() {
+    printf '\e[>u'              # push current keyboard protocol state
+    command sprite "$@"
+    local exit_code=$?
+    printf '\e[<u' 2>/dev/null  # pop — restores pre-sprite state
+    return $exit_code
+}
+
+# -----------------------------------------------------------------------------
 # GHOSTTY FOCUS REPORTING FIX
 # -----------------------------------------------------------------------------
 # Ghostty's shell integration re-enables focus reporting (DECSET 1004).
