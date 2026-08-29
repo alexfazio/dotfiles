@@ -1,269 +1,254 @@
 # Dotfiles
 
-Personal dotfiles managed with [yadm](https://yadm.io) (Yet Another Dotfiles Manager).
+Personal dotfiles managed with [yadm](https://yadm.io). Files live at their real paths in `$HOME`; yadm tracks them with a bare Git repo at `~/.local/share/yadm/repo.git`.
 
 ## What's Included
 
 | Application | Config Location | Description |
 |-------------|-----------------|-------------|
-| **Zsh** | `.zshrc##*` | Shell config with vi mode, aliases, PATH setup |
+| **Zsh** | `.zshrc##default`, `.zshrc##hostname.paradigma` | Portable shell config plus primary-machine overrides |
 | **Neovim** | `.config/nvim/` | LazyVim-based config with custom plugins |
-| **Aerospace** | `.config/aerospace/` | Tiling window manager for macOS |
-| **Ghostty** | `.config/ghostty/` | GPU-accelerated terminal emulator |
-| **Kitty** | `.config/kitty/` | Alternative terminal with splits |
-| **WezTerm** | `.config/wezterm/` | Cross-platform terminal in Lua |
-| **Yazi** | `.config/yazi/` | Terminal file manager with plugins |
-| **Tmux** | `.tmux.conf` | Vim-style navigation, Ghostty compatibility |
-| **Nushell** | `Library/Application Support/nushell/` | Structured data shell (env, config) |
-| **Mole** | `.config/mole/` | macOS cleanup and optimization |
+| **AeroSpace** | `.config/aerospace/aerospace.toml` | macOS tiling window manager |
+| **Ghostty** | `.config/ghostty/config` | GPU-accelerated terminal emulator |
+| **Kitty** | `.config/kitty/*.conf` | Alternative terminal config |
+| **WezTerm** | `.config/wezterm/wezterm.lua` | Cross-platform terminal config |
+| **Yazi** | `.config/yazi/*.toml` | Terminal file manager config |
+| **Mole** | `.config/mole/whitelist` | macOS cleanup whitelist |
 | **GPG Agent** | `.gnupg/gpg-agent.conf` | Passphrase caching config |
+| **yadm** | `.config/yadm/`, `.local/bin/yadm-auto-sync.sh` | Bootstrap, ignores, secret scanning, autosync |
+
+Not currently tracked: `.tmux.conf` and Nushell config.
 
 ---
 
-## For Me (Alex)
+## Current Machine Model
 
-### On Primary Machine (Alex-MBP)
+| Role | Hostname | Push | Pull | Auto-Sync |
+|------|----------|------|------|-----------|
+| Primary | `paradigma` | Yes | Yes | Hourly via launchd |
+| Secondary | Any other | Disabled by bootstrap | Yes | Shell stale-check only |
 
-#### Daily Workflow
+Bootstrap records the role in yadm config:
+
+```bash
+yadm config local.class
+```
+
+The primary machine runs:
+
+```bash
+~/Library/LaunchAgents/com.yadm.autosync.plist
+~/.local/bin/yadm-auto-sync.sh
+```
+
+---
+
+## Daily Workflow
 
 ```bash
 # Check status
 dfs                        # alias for: yadm status
 
-# After editing configs
-yadm add -u                # stage tracked file changes
-yadm commit -m "message"
+# View changes
+yadm diff
+
+# Commit tracked-file changes
+yadm add -u
+yadm commit -m "Update configs"
 yadm push
+
+# Pull updates
+yadm pull
 ```
 
-#### Adding New Files
+New files often live under broadly ignored `$HOME` paths such as `.config/` and `.local/`, so use `-f` when intentionally adding them:
 
 ```bash
-yadm add ~/.config/newapp/config.toml
+yadm add -f ~/.config/newapp/config.toml
 yadm commit -m "Add newapp config"
 yadm push
 ```
 
-#### After Adding/Changing Secrets
+---
+
+## Bootstrap
+
+New machine setup:
 
 ```bash
-# Re-encrypt and push
+brew install yadm
+yadm clone --bootstrap https://github.com/alexfazio/dotfiles.git
+```
+
+Bootstrap does the safe, non-secret setup:
+
+- detects machine role and sets `local.class`
+- disables push on secondary machines
+- installs/checks essential Homebrew tools
+- configures yadm repository defaults:
+  - `core.excludesfile=~/.config/yadm/gitignore`
+  - `status.showUntrackedFiles=no`
+- applies alternates with `yadm alt`
+- configures primary-machine autosync when hostname is `paradigma`
+- does **not** decrypt secrets automatically
+
+Essential tools installed by bootstrap:
+
+- `zoxide` - smarter `cd`
+- `fzf` - fuzzy finder
+- `fd` - file finder
+- `ripgrep` - fast search
+- `neovim` - editor
+- `gitleaks` - pre-commit secret scanning
+
+---
+
+## Secrets Policy
+
+Keep two concepts separate.
+
+### Current yadm setup
+
+The dotfiles repo tracks public config and keeps a legacy encrypted archive at:
+
+```text
+~/.local/share/yadm/archive
+```
+
+Legacy encrypted paths are defined in `~/.config/yadm/encrypt`:
+
+```text
+.secrets.env
+.ssh/id_*
+!.ssh/*.pub
+.gnupg/private-keys-v1.d/*
+.config/gh/hosts.yml
+```
+
+`yadm decrypt` writes those legacy local secret files back into `$HOME`. Do not run it during normal setup or normal pulls.
+
+Use it only when intentionally restoring legacy local SSH/GPG/GH/env files, after importing the matching GPG private key and reading the archive passphrase from 1Password:
+
+```bash
+yadm decrypt
+```
+
+### 1Password integration
+
+1Password is the recovery/source-of-truth direction for secrets:
+
+- recovery material for the yadm archive lives in 1Password
+- future env-secret workflows should prefer 1Password Environments / `op run`
+- future SSH workflows should prefer the 1Password SSH agent where practical
+- yadm encryption remains for legacy local-file restore, not as the default path for new secrets
+
+### Updating the legacy archive
+
+Only for secrets that still must exist as local files after `yadm decrypt`:
+
+```bash
 yadm encrypt
-yadm add ~/.local/share/yadm/archive
+yadm add -f ~/.local/share/yadm/archive
 yadm commit -m "Update encrypted secrets"
 yadm push
 ```
 
-#### Current Encrypted Files
-
-- SSH private keys (`~/.ssh/id_*`)
-- GPG private keys (`~/.gnupg/private-keys-v1.d/*`)
-- GitHub CLI auth (`~/.config/gh/hosts.yml`)
-- Environment secrets (`~/.secrets.env` - if created)
-
-### On Secondary Machines
-
-#### Initial Setup
-
-```bash
-# Install yadm
-brew install yadm
-
-# Clone and bootstrap (sets up pull-only mode automatically)
-yadm clone --bootstrap https://github.com/alexfazio/dotfiles.git
-
-# Decrypt secrets (requires GPG passphrase)
-yadm decrypt
-```
-
-#### Pulling Updates
-
-```bash
-yadm pull
-yadm decrypt   # if secrets were updated
-```
-
-#### If You Need to Push from Secondary
-
-```bash
-# Enable push (use sparingly)
-yadm remote set-url --push origin https://github.com/alexfazio/dotfiles.git
-
-# After pushing, consider disabling again
-yadm remote set-url --push origin no_push
-```
-
 ---
 
-## For Public Users
+## Secret Protection
 
-Want to use these dotfiles as a starting point? Here's how.
-
-### Option 1: Fork and Customize (Recommended)
-
-1. **Fork this repo** on GitHub
-
-2. **Remove my secrets and identity:**
-   ```bash
-   # Clone your fork
-   yadm clone --bootstrap https://github.com/YOUR_USERNAME/dotfiles.git
-
-   # Remove my encrypted archive (you can't decrypt it)
-   yadm rm .local/share/yadm/archive
-   yadm commit -m "Remove original encrypted secrets"
-   ```
-
-3. **Create your own alternates:**
-   ```bash
-   # Rename or create host-specific config for your machine
-   mv ~/.zshrc##hostname.Alex-MBP ~/.zshrc##hostname.$(hostname -s)
-
-   # Or just use the default (works on any machine)
-   # The .zshrc##default file is portable
-   ```
-
-4. **Update the bootstrap script:**
-
-   Edit `~/.config/yadm/bootstrap` and change:
-   ```bash
-   PRIMARY_HOSTNAME="Alex-MBP"  # Change to your hostname
-   ```
-
-5. **Set up your own GPG key for secrets:**
-   ```bash
-   # Generate a key
-   gpg --full-generate-key
-
-   # Configure yadm to use it
-   yadm config yadm.gpg-recipient YOUR_KEY_ID
-
-   # Add your secrets to ~/.config/yadm/encrypt patterns
-   # Then encrypt
-   yadm encrypt
-   yadm add ~/.local/share/yadm/archive
-   yadm commit -m "Add my encrypted secrets"
-   ```
-
-### Option 2: Cherry-Pick Configs
-
-Just copy specific configs you want:
-
-```bash
-# Example: just grab the Neovim config
-curl -fsSL https://raw.githubusercontent.com/alexfazio/dotfiles/main/.config/nvim/init.lua \
-  -o ~/.config/nvim/init.lua
-```
-
-### What Won't Work Without Changes
-
-| Item | Issue | Solution |
-|------|-------|----------|
-| `~/.zshrc##hostname.Alex-MBP` | Wrong hostname | Rename to your hostname or use `##default` |
-| `yadm decrypt` | My GPG key | Set up your own encryption |
-| `cc` function | My project paths | Edit paths in `.zshrc##hostname.*` |
-| `nvim-wrapper` | Ghostty-specific fix | Remove EDITOR override or keep the wrapper |
-
-### What Works Immediately
-
-- `.zshrc##default` - Portable shell config
-- `.config/nvim/` - Full Neovim setup (may need `:Lazy sync`)
-- `.config/aerospace/` - Tiling WM config
-- `.config/ghostty/` - Terminal config
-- `.config/kitty/` - Terminal config
-- `.config/wezterm/` - Terminal config
-- `.config/yazi/` - File manager config
-- `.tmux.conf` - Terminal multiplexer config
-- `Library/Application Support/nushell/` - Nushell shell config
-
----
-
-## How It Works
-
-### Host-Specific Configs (Alternates)
-
-yadm uses `##` suffixes to provide different files per machine:
-
-```
-.zshrc##default              # Used if no hostname match
-.zshrc##hostname.Alex-MBP    # Used only on Alex-MBP
-```
-
-When you run `yadm alt` (or clone/bootstrap), yadm symlinks the appropriate file to `.zshrc`.
-
-### Primary vs Secondary Machines
-
-| Machine | Hostname | Push | Pull | Auto-Sync |
-|---------|----------|------|------|-----------|
-| Primary | `Alex-MBP` | Yes | Yes | Hourly (launchd) |
-| Secondary | Any other | No (disabled) | Yes | Stale-check only |
-
-The bootstrap script detects hostname and configures accordingly. This prevents accidental config overwrites from test machines.
-
-### Automatic Sync
-
-**Primary machine:** A launchd agent runs hourly to commit and push any uncommitted changes to tracked files.
-
-```bash
-# Check sync log
-cat ~/.local/share/yadm/auto-sync.log
-
-# Manual sync (don't wait for hourly)
-~/.local/bin/yadm-auto-sync.sh
-
-# Stop/start auto-sync
-launchctl unload ~/Library/LaunchAgents/com.yadm.autosync.plist
-launchctl load ~/Library/LaunchAgents/com.yadm.autosync.plist
-```
-
-**All machines:** On shell startup, a background fetch checks for updates. If behind remote, you'll see:
-
-```
-[dotfiles] 3 update(s) available. Run: yadm pull
-```
-
-### Secrets Encryption
-
-Sensitive files are GPG-encrypted into a single archive:
-
-```
-~/.ssh/id_*                    ─┐
-~/.gnupg/private-keys-v1.d/*    ├─► yadm encrypt ─► ~/.local/share/yadm/archive
-~/.config/gh/hosts.yml         ─┘
-```
-
-The archive is safe to commit (encrypted), and `yadm decrypt` restores the files.
-
-### Secret Protection
-
-Three layers of protection for sensitive data:
+Four layers protect against accidental secret exposure:
 
 | Layer | Mechanism | Purpose |
 |-------|-----------|---------|
-| **GPG Encryption** | `yadm encrypt` | Securely sync intentional secrets (SSH keys, tokens) |
-| **Pre-commit hook** | gitleaks scans staged files | Blocks commits containing accidental secrets |
-| **Gitignore** | 30+ patterns | Prevents tracking sensitive file types |
+| **1Password** | Recovery material and future env/SSH workflows | Avoids writing secrets to disk by default |
+| **Legacy GPG archive** | `yadm encrypt` / `yadm decrypt` | Restores old local secret files only when explicitly needed |
+| **Pre-commit hook** | `gitleaks` scans staged files | Blocks commits containing accidental secrets |
+| **Gitignore** | Broad `$HOME` ignore rules | Prevents tracking sensitive/runtime/user-data paths |
 
-If you accidentally stage a file with a secret:
+If pre-commit blocks a commit:
 
+1. Remove the secret from the file, or move it to 1Password.
+2. Use yadm encryption only when the file must be restored locally by `yadm decrypt`.
+3. Add a pattern to `~/.config/yadm/gitleaks.toml` only for confirmed false positives.
+4. Use `yadm commit --no-verify` only as a last resort.
+
+---
+
+## Host-Specific Configs
+
+yadm alternates use `##` suffixes:
+
+```text
+.zshrc##default                 # Portable fallback
+.zshrc##hostname.paradigma      # Primary-machine shell config
 ```
-[pre-commit] Scanning for secrets...
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-❌ SECRET DETECTED - Commit blocked
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+`yadm alt` links the correct alternate to `.zshrc`.
+
+The primary zsh config sources `.zshrc##default` and adds local overrides such as the `cc` wrapper and project shortcuts.
+
+---
+
+## Public Users
+
+Want to use this repo as a starting point? Fork it first.
+
+### Fork and customize
+
+```bash
+yadm clone --bootstrap https://github.com/YOUR_USERNAME/dotfiles.git
 ```
 
-**Options when blocked:**
-1. Remove the secret from the file
-2. Add file to `~/.config/yadm/encrypt` (for intentional secrets)
-3. Add pattern to `~/.config/yadm/gitleaks.toml` (if false positive)
-4. `yadm commit --no-verify` (bypass - use with caution)
+Then:
+
+1. Remove my encrypted archive; you cannot decrypt it:
+   ```bash
+   yadm rm .local/share/yadm/archive
+   yadm commit -m "Remove original encrypted archive"
+   ```
+
+2. Create your own host-specific alternate if needed:
+   ```bash
+   cp ~/.zshrc##default ~/.zshrc##hostname.$(hostname -s)
+   yadm add -f ~/.zshrc##hostname.$(hostname -s)
+   ```
+
+3. Update `~/.config/yadm/bootstrap`:
+   ```bash
+   PRIMARY_HOSTNAME="$(hostname -s)"
+   ```
+
+4. Choose a secrets model:
+   - recommended: 1Password / platform-native secret storage
+   - legacy yadm path: generate your own GPG key, set `yadm.gpg-recipient`, then run `yadm encrypt`
+
+### What needs customization
+
+| Item | Why | Action |
+|------|-----|--------|
+| `.zshrc##hostname.paradigma` | Host-specific to my primary machine | Create your own `##hostname.$(hostname -s)` alternate or use `##default` |
+| Encrypted archive | Encrypted to my GPG key | Remove it and create your own if needed |
+| `cc` function | Contains my project shortcuts/workflow | Edit or remove host-specific shell overrides |
+| `nvim-wrapper` | Ghostty/Claude focus-reporting workaround | Keep if useful, otherwise remove the EDITOR override |
+
+### What works immediately
+
+- `.zshrc##default` - portable shell config
+- `.config/nvim/` - Neovim setup; run `nvim --headless "+Lazy! sync" +qa` or `:Lazy sync` if plugins need installation
+- `.config/aerospace/` - AeroSpace config
+- `.config/ghostty/` - Ghostty config
+- `.config/kitty/` - Kitty config
+- `.config/wezterm/` - WezTerm config
+- `.config/yazi/` - Yazi config
 
 ---
 
 ## File Structure
 
-```
+```text
 ~/
+├── README.md
 ├── .config/
 │   ├── aerospace/aerospace.toml
 │   ├── ghostty/config
@@ -271,49 +256,55 @@ If you accidentally stage a file with a secret:
 │   ├── mole/whitelist
 │   ├── nvim/
 │   │   ├── init.lua
+│   │   ├── lazy-lock.json
+│   │   ├── lazyvim.json
 │   │   └── lua/{config,plugins}/
 │   ├── wezterm/wezterm.lua
-│   ├── yazi/{*.toml,plugins/}
-│   └── yadm/
-│       ├── bootstrap          # New machine setup
-│       ├── encrypt            # Patterns for secrets
-│       ├── gitignore          # Never-track patterns
-│       ├── gitleaks.toml      # False positive allowlist
-│       └── hooks/pre_commit   # Secret scanning hook
-├── .tmux.conf
-├── Library/Application Support/nushell/
-│   ├── config.nu               # Shell behavior, aliases
-│   └── env.nu                  # Environment, PATH, cargo
+│   ├── yadm/
+│   │   ├── bootstrap
+│   │   ├── config
+│   │   ├── encrypt
+│   │   ├── gitignore
+│   │   ├── gitleaks.toml
+│   │   └── hooks/pre_commit
+│   └── yazi/{*.toml,plugins/}
 ├── .gnupg/gpg-agent.conf
 ├── .local/
 │   ├── bin/
-│   │   ├── nvim-wrapper       # Editor wrapper script
-│   │   └── yadm-auto-sync.sh  # Hourly sync script (primary only)
+│   │   ├── nvim-wrapper
+│   │   └── yadm-auto-sync.sh
 │   └── share/yadm/
-│       ├── archive            # Encrypted secrets
-│       └── auto-sync.log      # Sync history
+│       ├── archive                 # Legacy encrypted secrets archive
+│       └── auto-sync.log
 ├── .zshenv
-├── .zshrc##default            # Portable base config
-└── .zshrc##hostname.Alex-MBP  # Machine-specific config
+├── .zshrc##default
+└── .zshrc##hostname.paradigma
 ```
 
 ---
 
-## Requirements
+## Health Check
 
-- **macOS** (tested on Sonoma/Sequoia)
-- **Homebrew** - package manager
-- **GPG** - for secrets encryption/decryption
+Manual checks:
 
-Essential tools installed by bootstrap:
-- `zoxide` - smarter cd
-- `fzf` - fuzzy finder
-- `fd` - better find
-- `ripgrep` - better grep
-- `neovim` - editor
+```bash
+yadm status --short --untracked-files=all
+yadm config local.class
+yadm gitconfig --get core.excludesfile
+yadm gitconfig --get status.showUntrackedFiles
+launchctl list com.yadm.autosync
+```
 
-Optional but recommended:
-- `gitleaks` - secret scanning (`brew install gitleaks`)
+Expected healthy state on `paradigma`:
+
+- yadm installed and on `main`
+- `local.class=primary`
+- repository ignores configured
+- autosync launchd agent loaded
+- gitleaks/pre-commit available
+- `.zshrc` alternate applied
+- no pending yadm changes
+- GPG secret key may be absent locally; that is a warning only unless restoring legacy secrets
 
 ---
 
