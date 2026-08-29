@@ -1,4 +1,5 @@
-# Custom whitelist additions (2025-12-28)
+# Custom whitelist - paths protected from mo clean
+
 # Preserves app window positions, unsaved documents, scroll positions
 ~/Library/Saved Application State/*
 
@@ -8,21 +9,15 @@
 # Alfred workflow custom data
 ~/Library/Caches/com.runningwithcrayons.Alfred/*
 
-# Developer package caches (2025-12-28)
-# Python packages via uv
+# Developer package caches
 ~/.cache/uv/*
-
-# Homebrew package downloads
 ~/Library/Caches/Homebrew/*
-
-# Bun JavaScript runtime cache
 ~/.bun/install/cache/*
 
-# Claude desktop logs
+# App caches/state expensive to rebuild
 ~/Library/Logs/Claude/*
-
-# Apple ML model cache - avoids recompilation delay
 ~/Library/Application Support/coreMLCache/*
-
-# Cursor IDE cached data - avoids re-indexing delay
 ~/Library/Application Support/Cursor/CachedData/*
+
+# Slack caches - avoid full re-sync/re-download on next launch
+~/Library/Application Support/Slack/*

@@ -32,7 +32,7 @@ echo ""
 # SET MACHINE CLASS
 # -----------------------------------------------------------------------------
 
-PRIMARY_HOSTNAME="Alex-MBP"
+PRIMARY_HOSTNAME="paradigma"
 
 if [[ "$HOSTNAME" == "$PRIMARY_HOSTNAME" ]]; then
     yadm config local.class primary
@@ -75,15 +75,23 @@ fi
 if command -v brew &>/dev/null; then
     echo "Installing essential tools..."
 
-    # List of essential tools
-    TOOLS=(zoxide fzf fd ripgrep neovim)
+    # List of essential tools: formula:command
+    TOOLS=(
+        "zoxide:zoxide"
+        "fzf:fzf"
+        "fd:fd"
+        "ripgrep:rg"
+        "neovim:nvim"
+    )
 
-    for tool in "${TOOLS[@]}"; do
-        if ! command -v "$tool" &>/dev/null; then
-            echo "  Installing $tool..."
-            brew install "$tool" 2>/dev/null || true
+    for entry in "${TOOLS[@]}"; do
+        formula="${entry%%:*}"
+        command_name="${entry#*:}"
+        if ! command -v "$command_name" &>/dev/null; then
+            echo "  Installing $formula..."
+            brew install "$formula" 2>/dev/null || true
         else
-            echo "  [OK] $tool already installed"
+            echo "  [OK] $formula already installed"
         fi
     done
     echo ""

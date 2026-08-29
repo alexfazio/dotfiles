@@ -12,7 +12,7 @@ set -euo pipefail
 # CONFIGURATION
 # -----------------------------------------------------------------------------
 
-PRIMARY_HOSTNAME="Alex-MBP"
+PRIMARY_HOSTNAME="paradigma"
 LOG_FILE="$HOME/.local/share/yadm/auto-sync.log"
 LOCK_FILE="/tmp/yadm-auto-sync.lock"
 
