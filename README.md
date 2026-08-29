@@ -16,6 +16,7 @@ Personal dotfiles managed with [yadm](https://yadm.io). Files live at their real
 | **Mole** | `.config/mole/whitelist` | macOS cleanup whitelist |
 | **GPG Agent** | `.gnupg/gpg-agent.conf` | Passphrase caching config |
 | **yadm** | `.config/yadm/`, `.local/bin/yadm-auto-sync.sh` | Bootstrap, ignores, secret scanning, autosync |
+| **Agent skills** | `.agents/skills/dotfiles/` | Portable dotfiles operations guidance and health check |
 
 Not currently tracked: `.tmux.conf` and Nushell config.
 
@@ -249,6 +250,11 @@ Then:
 ```text
 ~/
 ├── README.md
+├── .agents/
+│   └── skills/dotfiles/
+│       ├── SKILL.md
+│       ├── references/
+│       └── scripts/health-check.sh
 ├── .config/
 │   ├── aerospace/aerospace.toml
 │   ├── ghostty/config
