@@ -79,6 +79,7 @@ if command -v brew &>/dev/null; then
     TOOLS=(
         "zoxide:zoxide"
         "fzf:fzf"
+        "gitleaks:gitleaks"
         "fd:fd"
         "ripgrep:rg"
         "neovim:nvim"
