@@ -67,6 +67,101 @@ pubring.*
 .Spotlight-V100
 .Trashes
 
+
+# Top-level home directories and runtime trash. Dotfiles are tracked explicitly;
+# these paths are user data or app/runtime state and make yadm untracked scans
+# unusable.
+.CFUserTextEncoding
+.DS_Store
+.zcompdump*
+.zsh_history
+.zsh_sessions/
+.zshrc
+.zprofile
+.Trash/
+tmp/
+.agent-browser/
+.agents/
+.apitap/
+.bundle/
+.buzz/
+.cache/
+.claude/
+.claude-science/
+.config/
+.local/
+.cmux/
+.cmuxterm/
+.codex/
+.cua-driver/
+.cursor/
+.docker/
+.fly/
+.flywheel/
+.gemini/
+.grok/
+.grokbot/
+.hermes/
+.homebrew/
+.honcho/
+.humanlayer/
+.ipython/
+.kimi-code/
+.matplotlib/
+.mcp-auth/
+.mesh-llm/
+.node_repl_history
+.omp/
+.orbstack/
+.pi/
+.prime/
+.python_history
+.sentry/
+.ssh/
+.supabase/
+.supacode/
+.tmux.conf
+.tmux.conf.backup-*
+.viminfo
+.XPPen/
+Applications/
+BlueStacks-data-backup-before-*/
+brewfiles/
+clankers/
+code/
+Creative Cloud Files/
+Desktop/
+Documents/
+Downloads/
+GitHub/
+go/
+Google Drive
+Library/
+Movies/
+Music/
+Pictures/
+alex.fazio@paradigma.inc - Google Drive/
+alessandro.fazio91@gmail.com - Google Drive/
+alex.fazio@paradigma.inc - Google Drive
+alessandro.fazio91@gmail.com - Google Drive
+iCloud Drive (Archive)/
+obsidian/
+OrbStack/
+package.json
+package-lock.json
+Public/
+raycast-extensions/
+repos/
+Screenshots/
+Screen Studio Projects/
+Team Dropbox/
+TempScanFile
+Zotero/
+.android/
+.claude.json*
+.clickshare_button/
+.cups/
+.gitconfig
 # Backup files
 *.backup
 *.bak

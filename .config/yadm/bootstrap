@@ -99,6 +99,15 @@ if command -v brew &>/dev/null; then
 fi
 
 # -----------------------------------------------------------------------------
+# YADM REPOSITORY DEFAULTS
+# -----------------------------------------------------------------------------
+
+yadm gitconfig core.excludesfile "$HOME/.config/yadm/gitignore"
+yadm gitconfig status.showUntrackedFiles no
+echo "[OK] yadm repository defaults configured"
+echo ""
+
+# -----------------------------------------------------------------------------
 # DECRYPT SECRETS (if archive exists)
 # -----------------------------------------------------------------------------
 
