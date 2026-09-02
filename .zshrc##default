@@ -25,6 +25,9 @@ export PATH="$HOME/.local/bin:$PATH"
 [[ -d "$HOME/.local/opt/go/bin" ]] && export PATH="$PATH:$HOME/.local/opt/go/bin"
 [[ -d "$HOME/go/bin" ]] && export PATH="$PATH:$HOME/go/bin"
 
+# Keep Pi-compatible OMP plugins in OMP's agent directory.
+export PI_CODING_AGENT_DIR="$HOME/.omp/agent"
+
 # -----------------------------------------------------------------------------
 # VI MODE
 # -----------------------------------------------------------------------------
