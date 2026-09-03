@@ -232,3 +232,9 @@ eval "$(direnv hook zsh)"
 
 # bun completions
 [ -s "/Users/alex/.bun/_bun" ] && source "/Users/alex/.bun/_bun"
+
+# >>> flywheel PATH >>>
+if ! printf "%s" ":$PATH:" | grep -F -q ':/Users/alex/.local/bin:'; then
+  export PATH='/Users/alex/.local/bin':$PATH
+fi
+# <<< flywheel PATH <<<
