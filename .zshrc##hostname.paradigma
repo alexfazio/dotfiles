@@ -238,3 +238,12 @@ if ! printf "%s" ":$PATH:" | grep -F -q ':/Users/alex/.local/bin:'; then
   export PATH='/Users/alex/.local/bin':$PATH
 fi
 # <<< flywheel PATH <<<
+
+# --- mise activation (must come AFTER any ~/.local/bin PATH additions) ---
+# ~/.local/bin/node is a Hermes-managed Node symlink (v26) that satisfies the
+# flywheel PATH guard above but pins the wrong major version for repos pinning
+# node@24. Activating mise here places its shims first, resolving node/npm to
+# the version in ~/.config/mise/config.toml (24.18.0) so engine checks pass.
+if command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate zsh)"
+fi
